@@ -10,21 +10,19 @@ from repositories.pictures import *
 
 from routers.users import usersapp
 from routers.pictures import pictureapp
-from routers.template_rout import templatesapp,templates
-
+from routers.template_rout import templatesapp, templates
 
 
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
     "http://localhost:8000/",
-    "http://localhost/", 
+    "http://localhost/",
 ]
 
 tags_metadata = [{
     "name": "users-api",
     "description": "Api сервиса User",
-    
 }]
 
 
@@ -36,8 +34,6 @@ app = FastAPI(
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
 
 
 app.add_middleware(
@@ -52,6 +48,7 @@ metadata.create_all(engine)
 
 app.state.database = database
 
+
 @app.on_event("startup")
 async def startup():
     await database.connect()
@@ -64,13 +61,13 @@ async def shutdown():
 app.include_router(
     usersapp,
     tags=["users"]
-    )
+)
 app.include_router(
     pictureapp,
     tags=["picture"]
-    )
+)
 
 app.include_router(
     templatesapp,
     tags=["templates"]
-    )
+)

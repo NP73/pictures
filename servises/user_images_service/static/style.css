@@ -25,7 +25,35 @@ html {
   z-index: 1;
   top: -5rem;
 }
+.not-image{
+  display: none;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  top: -5rem;
+}
+.not-auth{
+  display: none;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  top: -5rem;
+}
 
+.true-auth {
+  display: none;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  top: -5rem;
+}
+.limit-images{
+  display: none;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  top: -8rem;
+}
 .succes_upload-true{
   display: block;
 }
@@ -57,4 +85,19 @@ html {
 
 .btn{
   box-shadow: 2px 2px 2px 2px #00000052;
+}
+
+.exit-google{
+  display: none;
+}
+
+.exit-googlesign{
+  display: block;
+}
+.g-signin2{
+  display: block;
+}
+
+.g-signintrue{
+  display: none;
 }

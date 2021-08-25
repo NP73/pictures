@@ -1,12 +1,13 @@
 import datetime
 import ast
 
-from pydantic import  validator
+from pydantic import validator
 import ormar
 
 
 from config.database import metadata, database
 import json
+
 
 class Pictures(ormar.Model):
 
@@ -29,17 +30,12 @@ class Pictures(ormar.Model):
     id: int = ormar.Integer(primary_key=True)
     user_id: int = ormar.Integer()
     img_link: str = ormar.String(max_length=1000)
-    settings:str = ormar.String(max_length=1000)
-    status :bool = ormar.Boolean(default=False)
+    settings: str = ormar.String(max_length=1000)
+    status: bool = ormar.Boolean(default=False)
     result_imgs_link: str = ormar.String(max_length=1000)
-    result_dict:str = ormar.String(max_length=1000)
-    timestamp: datetime.datetime = ormar.DateTime(default=datetime.datetime.now)
-
+    result_dict: str = ormar.String(max_length=1000)
+    timestamp: datetime.datetime = ormar.DateTime(
+        default=datetime.datetime.now)
 
     class Config:
         orm_mode = True
-
-
-# import ast
-# str_of_dict = "{'key1': 'key1value', 'key2': 'key2value'}"
-# ast.literal_eval(str_of_dict)

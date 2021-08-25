@@ -1,7 +1,10 @@
+from typing import Optional
 from pydantic import BaseModel
 
+
 class UserCreate(BaseModel):
-    email: str 
-    password: str 
-    access:bool 
-    spent_day_limit: int 
+    id_google_client:str
+    email: str
+    password: Optional[str]=''
+    access: Optional[bool] = True
+    spent_day_limit: int

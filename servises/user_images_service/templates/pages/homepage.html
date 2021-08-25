@@ -6,25 +6,49 @@
 
         <div class="form-images">
             <div style="width: 100%;" class="text-center">
-                <img style="max-width:10rem" id="output"/>
+                <img style="max-width:10rem" id="output" />
             </div>
             <div class="input-group" style="position: relative;">
-                <div id="succes_upload"  class="succes_upload text-center">
-                    <div  class="alert alert-success" role="alert">
+                <div id="succes_upload" class="succes_upload text-center">
+                    <div class="alert alert-success" role="alert">
                         Успешно!
-                      </div>
+                    </div>
+                </div>
+                <div class="not-image text-center">
+                    <div class="alert alert-info" role="alert">
+                        Изображение не загружено!
+                    </div>
                 </div>
 
-            <input onchange="handleFiles(this.files)" style="width: 100%;"  type="file" class="form-control" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload"> 
-            <p style="width: 100%;"  class="text-center pt-3">загрузите изображение</p>
-            <div class="text-center" style="width: 100%;">
-                <button onclick="uploadImage()" type="button" class="btn btn-outline-success">
-                    <div class="send-load spinner-border spinner-border-sm" role="status">
-                        <span class="sr-only">Loading...</span>
-                      </div>
-                     <span class="send">Отправить</span> </button>
+                <div class="not-auth text-center">
+                    <div class="alert alert-info" role="alert">
+                        Выполните вход!
+                    </div>
+                </div>
+                <div class="true-auth text-center">
+                    <div class="text-al alert alert-success" role="alert">
+
+                    </div>
+                </div>
+
+                <div class="limit-images text-center">
+                    <div class="alert alert-info" role="alert">
+                        Вы исчерпали дневной лимит! <br> Попробуйте позже
+                    </div>
+                </div>
+                <input onchange="handleFiles(this.files)" style="width: 100%;" type="file" class="form-control"
+                    id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload">
+                <p style="width: 100%;" class="text-center pt-3">загрузите изображение</p>
+                <p style="width: 100%;font-size: 1.4rem;color: #669ed5;" class="count-images text-center pt-3"></p>
+                <div class="text-center" style="width: 100%;">
+                    <button onclick="uploadImage()" type="button" class="btn btn-outline-success">
+                        <div class="send-load spinner-border spinner-border-sm" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <span class="send">Отправить</span>
+                    </button>
+                </div>
             </div>
-        </div>
         </div>
     </section>
 </div>

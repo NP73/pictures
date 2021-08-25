@@ -9,13 +9,14 @@ usersapp = APIRouter(
 )
 
 
-
 @usersapp.post('/')
 async def create(user: users.UserCreate):
-    return await Users.objects.create(**user.dict())
-    
+    user_get = await Users.objects.get_or_none(id_google_client=user.id_google_client)
+    if not user_get:
+        return await Users.objects.create(**user.dict())
+    else:
+        return user_get
 
-  
 
 @usersapp.get('/')
 async def get_all():
@@ -23,5 +24,5 @@ async def get_all():
 
 
 @usersapp.get('/{id}')
-async def get_one(id:int):
+async def get_one(id: int):
     return await Users.objects.get_or_none(id=id)

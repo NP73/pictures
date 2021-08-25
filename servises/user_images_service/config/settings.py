@@ -2,8 +2,6 @@ from dotenv import load_dotenv
 from pydantic import BaseSettings
 
 
-
-
 class Settings(BaseSettings):
 
     """
@@ -11,10 +9,13 @@ class Settings(BaseSettings):
     Pydantic
     Берет данные переменных из .env файла
     """
-    postgres_db:str = None
-    postgres_user:str = None
-    postgres_password:str = None
-    
+    postgres_db: str = None
+    postgres_user: str = None
+    postgres_password: str = None
+    id_client_google:str = None
+    secret_key_google_auth: str = None
+
+ 
 
     class Config:
         env_file = ".env"
