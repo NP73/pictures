@@ -43,7 +43,7 @@ async def get_one(id: int):
 async def create_upload_file(user_google_id: str, background_tasks: BackgroundTasks, image: UploadFile = File(...)):
     user, count_limit = await users.get_count_images_user_id(user_google_id)
     if user:
-        # background_tasks.add_task(logics_image, image)
+        background_tasks.add_task(logics_image, image)
         return {'message': True, "limit": f'{count_limit}/5'}
     else:
         return {'message': False, "limit": f'{count_limit}/5'}
