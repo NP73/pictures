@@ -14,8 +14,6 @@ from routers.template_rout import templatesapp, templates
 
 
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
     "http://localhost:8000/",
     "http://localhost/",
 ]

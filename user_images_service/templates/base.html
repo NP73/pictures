@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-signin-client_id" content="86521700864-pjvf703t40ifiopgerhta3cj7phidrsp.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="286255588660-rgio676kjntofk12u3b1kg7ok61fkbdo.apps.googleusercontent.com">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
     <link
     rel="stylesheet"
@@ -12,15 +12,13 @@
     integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0="
     crossorigin="anonymous"
   />
-    <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}" />
+    <link rel="stylesheet" href="/static/style.css" />
     <title>Document</title>
 </head>
 <body>
     <header>
         <div id="nav">
             {% include 'includes/nav.html' %}
-            
-
         </div>
         
     </header>
@@ -35,7 +33,7 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', path='script.js') }}"></script>
+    <script src="/static/script.js"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
 
 </body>
