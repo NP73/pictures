@@ -10,14 +10,15 @@ import threading
 
 app = FastAPI()
 import time
-queue = asyncio.Queue()
+import queue
+queue = queue.Queue()
 
 async def upload_images():
 
     
     tt = queue.qsize()
     while tt:
-        client = await queue.get()
+        client =  queue.get()
         print(f'добавлено изображение в очередь от клиента с id {client}')
         print('поток',threading.current_thread())
         queue.task_done()
@@ -53,7 +54,8 @@ async def apend_item_quene():
 
 @app.get("/")
 async def read_root(client:int):
-    await queue.put(client)
+    queue.put(client)
     await apend_item_quene()
     return 'ok'
 
+queue.join()
