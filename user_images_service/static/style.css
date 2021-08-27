@@ -54,6 +54,14 @@ html {
   z-index: 1;
   top: -8rem;
 }
+
+.asses-images {
+  display: none;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  top: -5rem;
+}
 .succes_upload-true{
   display: block;
 }
@@ -61,6 +69,7 @@ html {
 .send-load{
   display: none;
 }
+
 .send-load-true{
   display: block;
 }

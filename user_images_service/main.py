@@ -10,7 +10,8 @@ from repositories.pictures import *
 
 from routers.users import usersapp
 from routers.pictures import pictureapp
-from routers.template_rout import templatesapp, templates
+from routers.template_rout import templatesapp
+from routers.socket_route import socket_rout
 
 
 origins = [
@@ -68,4 +69,8 @@ app.include_router(
 app.include_router(
     templatesapp,
     tags=["templates"]
+)
+
+app.include_router(
+    socket_rout
 )

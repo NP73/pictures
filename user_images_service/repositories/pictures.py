@@ -28,7 +28,7 @@ class Pictures(ormar.Model):
         database = database
 
     id: int = ormar.Integer(primary_key=True)
-    user_id: int = ormar.Integer()
+    user_id_google: str = ormar.String(max_length=1000)
     img_link: str = ormar.String(max_length=1000)
     settings: str = ormar.String(max_length=1000)
     status: bool = ormar.Boolean(default=False)

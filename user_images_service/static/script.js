@@ -1,3 +1,30 @@
+let ws
+
+
+if (localStorage.getItem('google_id')) {
+  ws = new WebSocket(`ws://localhost:8000/ws/${localStorage.getItem('google_id')}`);
+  ws.onmessage = (event) => {
+    if (event.data.length == 3){
+      console.log( 'загрузка прошла успешно');
+      fetch(`http://localhost:8000/api/v1/users/change_status/${localStorage.getItem('google_id')}`, {
+        method: 'post',
+        headers: headers
+      }).then(function (responce) {
+        return responce.json();
+      }).then(function (data) {
+        console.log( 'загрузка прошла успешно');
+    
+    })
+    }
+    else{
+      console.log(event.data.length);
+    }
+  }
+}
+else{
+  console.log('not websockket');
+}
+
 const headers = {
   "Content-Type": "application/json",
 };
@@ -39,6 +66,7 @@ async function uploadImage() {
       }).then(function (response) {
         return response.json();
       }).then(function (data) {
+      if(data.asses){
         if (data.message) {
           alerts.classList.add("succes_upload-true");
           document.querySelector('.send-load').classList.remove('send-load-true')
@@ -59,6 +87,17 @@ async function uploadImage() {
           document.querySelector('.limit-images').classList.add('succes_upload-true')
           setTimeout(() => {
             document.querySelector('.limit-images').classList.remove('succes_upload-true')
+          }, 3000);
+        }
+        }
+        else{
+          inputElement.value = ""
+          output.src = ""
+          document.querySelector('.send-load').classList.remove('send-load-true')
+          document.querySelector('.send').classList.remove('send-text')
+          document.querySelector('.asses-images').classList.add('succes_upload-true')
+          setTimeout(() => {
+            document.querySelector('.asses-images').classList.remove('succes_upload-true')
           }, 3000);
         }
         document.querySelector('.count-images').innerHTML = `загружено за 24 часа  ${data.limit}` 
