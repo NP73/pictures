@@ -62,6 +62,12 @@ html {
   z-index: 1;
   top: -5rem;
 }
+.text-result_count{
+  display: none;
+}
+.send-rescount{
+  display: block;
+}
 .succes_upload-true{
   display: block;
 }

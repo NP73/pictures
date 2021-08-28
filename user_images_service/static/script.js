@@ -4,24 +4,50 @@ let ws
 if (localStorage.getItem('google_id')) {
   ws = new WebSocket(`ws://localhost:8000/ws/${localStorage.getItem('google_id')}`);
   ws.onmessage = (event) => {
-    if (event.data.length == 3){
-      console.log( 'загрузка прошла успешно');
+    let result = JSON.parse(event.data)
+    if (result.close_result) {
+
+      let data = {
+        "origin_img_id": Number(result.origin_img_id),
+        "result_dict": String(result.result_dict),
+        "status": true,
+
+      }
+
       fetch(`http://localhost:8000/api/v1/users/change_status/${localStorage.getItem('google_id')}`, {
         method: 'post',
-        headers: headers
+        headers: headers,
+        body: JSON.stringify(data)
       }).then(function (responce) {
         return responce.json();
       }).then(function (data) {
-        console.log( 'загрузка прошла успешно');
-    
-    })
+        console.log('загрузка прошла успешно');
+        let result_count = document.querySelector('.text-result_count')
+        result_count.innerHTML = `обработка завершена`
+        upload = 0
+      })
     }
-    else{
-      console.log(event.data.length);
+    else {
+      let data_add_link = {
+        'img_link': result.result_image
+      }
+      fetch(`http://localhost:8000/api/v1/pictures/add_link_img/${Number(result.origin_img_id)}`, {
+        method: 'post',
+        headers: headers,
+        body: JSON.stringify(data_add_link)
+      }).then(function (responce) {
+        return responce.json();
+      }).then(function (data) {
+        console.log('линк добавлен',data);
+        let result_count = document.querySelector('.text-result_count')
+        result_count.innerHTML = `Обработана ${data.count_res_image}/10 часть изображения`
+        output.src = data.result_imgs_link 
+
+      })
     }
   }
 }
-else{
+else {
   console.log('not websockket');
 }
 
@@ -37,12 +63,24 @@ let output = document.getElementById('output');
 inputElement.addEventListener("change", handleFiles, false);
 
 let fileList
-
+let upload = 0
 // Функция загружает изображение в предосмотр
 function handleFiles() {
   fileList = this.files;
+
   try {
+    if(upload = 0){
     output.src = URL.createObjectURL(this.files[0]);
+    }
+    let result_count = document.querySelector('.text-result_count')
+    try {
+      if(upload = 0){
+      result_count.classList.remove('send-rescount')
+    }
+    } catch (error) {
+      console.log('нет класаа');
+    }
+    
   } catch (error) {
     console.log(undefined);
   }
@@ -66,33 +104,39 @@ async function uploadImage() {
       }).then(function (response) {
         return response.json();
       }).then(function (data) {
-      if(data.asses){
-        if (data.message) {
-          alerts.classList.add("succes_upload-true");
-          document.querySelector('.send-load').classList.remove('send-load-true')
-          document.querySelector('.send').classList.remove('send-text')
-          setTimeout(() => {
+        if (data.asses) {
+          if (data.message) {
+            alerts.classList.add("succes_upload-true");
+            document.querySelector('.send-load').classList.remove('send-load-true')
+            document.querySelector('.send').classList.remove('send-text')
+            setTimeout(() => {
+              alerts.classList.remove("succes_upload-true");
+            }, 2000);
+            document
+            inputElement.value = ""
+            upload = 1
+            let result_count = document.querySelector('.text-result_count')
+            result_count.innerHTML = `Обработана 0/10 часть изображения`
+            result_count.classList.add('send-rescount')
+            // output.src = ""
+          }
+          else {
+            document.querySelector('.send-load').classList.remove('send-load-true')
+            document.querySelector('.send').classList.remove('send-text')
             alerts.classList.remove("succes_upload-true");
-          }, 2000);
-
-          inputElement.value = ""
-          output.src = ""
+            inputElement.value = ""
+            output.src = ""
+            document.querySelector('.limit-images').classList.add('succes_upload-true')
+            setTimeout(() => {
+              document.querySelector('.limit-images').classList.remove('succes_upload-true')
+            }, 3000);
+          }
         }
         else {
-          document.querySelector('.send-load').classList.remove('send-load-true')
-          document.querySelector('.send').classList.remove('send-text')
-          alerts.classList.remove("succes_upload-true");
           inputElement.value = ""
+          if(upload = 0){
           output.src = ""
-          document.querySelector('.limit-images').classList.add('succes_upload-true')
-          setTimeout(() => {
-            document.querySelector('.limit-images').classList.remove('succes_upload-true')
-          }, 3000);
-        }
-        }
-        else{
-          inputElement.value = ""
-          output.src = ""
+          }
           document.querySelector('.send-load').classList.remove('send-load-true')
           document.querySelector('.send').classList.remove('send-text')
           document.querySelector('.asses-images').classList.add('succes_upload-true')
@@ -100,7 +144,7 @@ async function uploadImage() {
             document.querySelector('.asses-images').classList.remove('succes_upload-true')
           }, 3000);
         }
-        document.querySelector('.count-images').innerHTML = `загружено за 24 часа  ${data.limit}` 
+        document.querySelector('.count-images').innerHTML = `загружено за 24 часа  ${data.limit}`
       });
     }
     else {
@@ -139,7 +183,7 @@ function onSignIn(googleUser) {
   }).then(function (data) {
     document.querySelector('.count-images').innerHTML = `
     загружено за 24 часа  ${data.spent_day_limit}/5
-    ` 
+    `
     localStorage.setItem('google_id', data.id_google_client);
     document.querySelector('.true-auth').classList.add('succes_upload-true')
     document.querySelector('.text-al').innerHTML = `Привет,${profile.getName()}`

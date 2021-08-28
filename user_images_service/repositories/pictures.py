@@ -32,7 +32,7 @@ class Pictures(ormar.Model):
     img_link: str = ormar.String(max_length=1000)
     settings: str = ormar.String(max_length=1000)
     status: bool = ormar.Boolean(default=False)
-    result_imgs_link: str = ormar.String(max_length=1000)
+    result_imgs_link: str = ormar.String(max_length=10000)
     result_dict: str = ormar.String(max_length=1000)
     timestamp: datetime.datetime = ormar.DateTime(
         default=datetime.datetime.now)

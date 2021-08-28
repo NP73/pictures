@@ -9,7 +9,7 @@ from typing import Optional
 import os
 import shutil
 
-
+from fastapi.encoders import jsonable_encoder
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
@@ -17,53 +17,88 @@ import cv2
 
 from routers.socket_route import list_user_id_socket, manager
 from repositories.pictures import Pictures
-from repositories.users import Users
-from schemas.pictures import PictureCreate
 
-from main import *
 
 
 queue_task = queue.Queue()
 
 
-async def add_alert_brayzer_client(user_google_id: str, image: str):
+async def add_alert_brayzer_client(
+        img_link_origin,
+        origin_img_id,
+        user_google_id: str,
+        result_dict,
+        image: Optional[str] = None):
     if (user_google_id in [user_id['user_google_id']
-                               for user_id in
-                               list_user_id_socket]
-            ):
+                           for user_id in
+                           list_user_id_socket]
+        ):
         user_connect = ([
             user_data for user_data in list_user_id_socket
             if user_data['user_google_id'] == user_google_id
         ][0])
-        await manager.send_personal_message(f"{image}", user_connect['websocket_client'])
+        if image:
+            await manager.send_personal_message(jsonable_encoder(
+                {'close_result': False,
+                 'origin_img_id': origin_img_id,
+                 'img_link_origin': img_link_origin,
+                 'result_image': image,
+                 'user_google_id': user_google_id,
+                 'result_dict': result_dict,
+                 }
+            ), user_connect['websocket_client'])
+        else:
+            await manager.send_personal_message(jsonable_encoder(
+                {
+                    'close_result': True,
+                    'origin_img_id': origin_img_id,
+                    'img_link_origin': img_link_origin,
+                    'result_image': None,
+                    'user_google_id': user_google_id,
+                    'result_dict': result_dict,
+                }
+            ), user_connect['websocket_client'])
     else:
         pass
 
     return 'ok'
 
-async def image_change(user_google_id,img_origin_path,result_path, dict:Optional[dict] = {}):
+
+async def image_change(user_google_id, img_origin_path, result_path, origin_img_id, dict: Optional[dict] = {}):
     image = cv2.imread(img_origin_path)
     dict['a'] = 10
-    size_image = np.copy(image[..., 0:3]) # убираем лишнюю размерность  
-    k = dict['a'] # количество выходных картинок
+    size_image = np.copy(image[..., 0:3])  # убираем лишнюю размерность
+    k = dict['a']  # количество выходных картинок
     for i in range(k):
-        img_i = size_image*int(i/k)
-        plt.imsave(f'{result_path}/{str(i)}return.png', img_i ) # рисунки сохраняются в одну папку
-        await add_alert_brayzer_client(user_google_id,f'http://localhost:8000/{result_path}/{str(i)}return.png' )
-        time.sleep(3) #тут более-менее реальное время обработки функции, работаем над умешьшением
+        img_i = size_image*int(i/k+1)
+        # рисунки сохраняются в одну папку
+        plt.imsave(f'{result_path}/{str(i)}return.png', img_i)
+        await add_alert_brayzer_client(
+            img_link_origin=f'http://localhost:8000/{img_origin_path}',
+            origin_img_id=origin_img_id,
+            user_google_id=user_google_id,
+            result_dict=None,
+            image=f'http://localhost:8000/{result_path}/{str(i)}return.png'
+        )
+        # тут более-менее реальное время обработки функции, работаем над умешьшением
+        time.sleep(3)
     result_dict = dict
     status = 1
-    print(result_dict,status)
-    await add_alert_brayzer_client(user_google_id,"1")
-    return result_dict, status #возвращается выходной словарь и сигнал о завершении работы функции
+    print(result_dict, status)
+    await add_alert_brayzer_client(
+        img_link_origin=f'http://localhost:8000/{img_origin_path}',
+        origin_img_id=origin_img_id,
+        user_google_id=user_google_id,
+        result_dict=result_dict,
+        image=''
 
-
-
+    )
+    # возвращается выходной словарь и сигнал о завершении работы функции
+    return result_dict, status
 
 
 async def upload_images():
     len_task_item = queue_task.qsize()
-
     while len_task_item:
         client = queue_task.get()
         print(
@@ -71,8 +106,8 @@ async def upload_images():
         user_google_id = client[0]
         image_origin_path = client[1]
         result_path = client[2]
-        await image_change(user_google_id, image_origin_path, result_path)
-        # await add_alert_brayzer_client(client[0], client[1])
+        origin_img_id = client[3]
+        await image_change(user_google_id, image_origin_path, result_path, origin_img_id, dict={})
         queue_task.task_done()
         len_task_item = queue_task.qsize()
 
@@ -85,8 +120,9 @@ def start_thread_upload():
     loop.close()
 
 
-async def apend_item_quene(user_google_id, image_origin_path,result_path):
-    queue_task.put([user_google_id, image_origin_path,result_path])
+async def apend_item_quene(user_google_id, image_origin_path, result_path, origin_img_id):
+    queue_task.put([user_google_id, image_origin_path,
+                   result_path, origin_img_id])
     print(threading.active_count())
     try:
         if threading.active_count() == 6:
@@ -101,30 +137,29 @@ async def apend_item_quene(user_google_id, image_origin_path,result_path):
 
 async def save_origin_image(user_google_id, image):
 
-        path_dir = f'static/images'
-        if not os.path.exists(f'{path_dir}/{user_google_id}'):
-            os.mkdir(f'{path_dir}/{user_google_id}')
-            
-        if not os.path.exists(f'{path_dir}/{user_google_id}/{image.filename}'):
-            os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}')
-            os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/origin')
-            os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/result')
-        with open(f"{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}", "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
-            image_link = f'http://localhost:8000/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
-        await Pictures.objects.create(
-                    user_id_google = user_google_id,
-                    img_link = image_link ,
-                    settings=str({'a':10}),
-                    status=False,
-                    result_imgs_link= str({}),
-                    result_dict=str({}),             
-                    )
-    
-        result_img_path = f'{path_dir}/{user_google_id}/{image.filename}/result'
-        await apend_item_quene(user_google_id, image_link[22:],result_img_path )
+    path_dir = f'static/images'
+    if not os.path.exists(f'{path_dir}/{user_google_id}'):
+        os.mkdir(f'{path_dir}/{user_google_id}')
 
-   
+    if not os.path.exists(f'{path_dir}/{user_google_id}/{image.filename}'):
+        os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}')
+        os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/origin')
+        os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/result')
+    with open(f"{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}", "wb") as buffer:
+        shutil.copyfileobj(image.file, buffer)
+        image_link = f'http://localhost:8000/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
+    new_image = await Pictures.objects.create(
+        user_id_google=user_google_id,
+        img_link=image_link,
+        settings=str({'a': 10}),
+        status=False,
+        result_imgs_link=str({}),
+        result_dict=str({}),
+    )
+
+    result_img_path = f'{path_dir}/{user_google_id}/{image.filename}/result'
+    await apend_item_quene(user_google_id, image_link[22:], result_img_path, new_image.id)
+
 
 async def reverse_dict_for_str_picture(picture):
     picture.result_imgs_link = str(picture.result_imgs_link)

@@ -1,10 +1,10 @@
-import queue
 from repositories.users import Users
+import ast
+
 
 from fastapi import (APIRouter,
                      File,
-                     UploadFile,
-                     BackgroundTasks
+                     UploadFile
                      )
 
 
@@ -20,7 +20,6 @@ from service.pictures import (
 )
 
 
-
 pictureapp = APIRouter(
     prefix="/api/v1/pictures",
     responses={404: {"description": "Not found"}}
@@ -33,8 +32,6 @@ async def create(picture: pictures.PictureCreate):
     return await Pictures.objects.create(**picture_dict.dict())
 
   
-
-
 @pictureapp.get('/')
 async def get_all():
     return await Pictures.objects.all()
@@ -46,10 +43,25 @@ async def get_one(id: int):
     return await reverse_str_for_dict_picture(picture)
 
 
+@pictureapp.post('/add_link_img/{id_img_origin}')
+async def add_result_img_link_for_origin(id_img_origin: int,link_image:pictures.LinkImage):
+    picture = await Pictures.objects.get_or_none(id=id_img_origin)
+    result_linc = ast.literal_eval(picture.result_imgs_link)
+    result_linc[str(len(result_linc)+1)] = link_image.img_link
+    
+    await picture.update(
+        result_imgs_link = str(result_linc)
+    )
+    return {
+        'result_imgs_link':link_image.img_link,
+        'count_res_image':len(result_linc)
+        }
+
 @pictureapp.post("/uploadimages/{user_google_id}")
 async def create_upload_file(user_google_id: str,image: UploadFile = File(...)):
-    
+
     user_asses = await Users.objects.get(id_google_client=user_google_id)
+
     if user_asses.access:
         user, count_limit = await users.get_count_images_user_id(user_google_id)
         if user:
