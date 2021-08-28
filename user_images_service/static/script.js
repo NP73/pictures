@@ -2,7 +2,7 @@ let ws
 
 
 if (localStorage.getItem('google_id')) {
-  ws = new WebSocket(`ws://localhost:8000/ws/${localStorage.getItem('google_id')}`);
+  ws = new WebSocket(`ws://api-booking.ru:8000/ws/${localStorage.getItem('google_id')}`);
   ws.onmessage = (event) => {
     let result = JSON.parse(event.data)
     if (result.close_result) {
@@ -14,7 +14,7 @@ if (localStorage.getItem('google_id')) {
 
       }
 
-      fetch(`http://localhost:8000/api/v1/users/change_status/${localStorage.getItem('google_id')}`, {
+      fetch(`http://api-booking.ru:8000/api/v1/users/change_status/${localStorage.getItem('google_id')}`, {
         method: 'post',
         headers: headers,
         body: JSON.stringify(data)
@@ -31,7 +31,7 @@ if (localStorage.getItem('google_id')) {
       let data_add_link = {
         'img_link': result.result_image
       }
-      fetch(`http://localhost:8000/api/v1/pictures/add_link_img/${Number(result.origin_img_id)}`, {
+      fetch(`http://api-booking.ru:8000/api/v1/pictures/add_link_img/${Number(result.origin_img_id)}`, {
         method: 'post',
         headers: headers,
         body: JSON.stringify(data_add_link)
@@ -96,7 +96,7 @@ async function uploadImage() {
       document.querySelector('.send-load').classList.add('send-load-true')
       document.querySelector('.send').classList.add('send-text')
 
-      fetch(`http://localhost:8000/api/v1/pictures/uploadimages/${localStorage.getItem('google_id')}`, {
+      fetch(`http://api-booking.ru:8000/api/v1/pictures/uploadimages/${localStorage.getItem('google_id')}`, {
         method: 'post',
         body: formData,
 
@@ -173,7 +173,7 @@ function onSignIn(googleUser) {
     "spent_day_limit": 0
   }
   // отправка на сервер данных гугл
-  fetch('http://localhost:8000/api/v1/users/', {
+  fetch('http://api-booking.ru:8000/api/v1/users/', {
     method: 'post',
     body: JSON.stringify(data),
     headers: headers

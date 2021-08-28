@@ -17,6 +17,8 @@ from routers.socket_route import socket_rout
 origins = [
     "http://localhost:8000/",
     "http://localhost/",
+    "http://api-booking.ru:8000",
+    "http://api-booking.ru"
 ]
 
 tags_metadata = [{
@@ -37,7 +39,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
