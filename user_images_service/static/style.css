@@ -67,7 +67,12 @@ html {
 }
 .send-rescount{
   display: block;
+  position: absolute;
+  bottom: -3rem;
+  width: 100%;
+
 }
+
 .succes_upload-true{
   display: block;
 }
@@ -88,6 +93,9 @@ html {
   display: none;
 }
 
+.not-output{
+  display: none;
+}
 .form-control {
 
   box-shadow: 3px 3px 3px 3px #00000052;

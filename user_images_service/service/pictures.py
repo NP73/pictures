@@ -73,6 +73,7 @@ async def image_change(user_google_id, img_origin_path, result_path, origin_img_
         img_i = size_image*int(i/k+1)
         # рисунки сохраняются в одну папку
         plt.imsave(f'{result_path}/{str(i)}return.png', img_i)
+        time.sleep(15)
         await add_alert_brayzer_client(
             img_link_origin=f'http://localhost:8000/{img_origin_path}',
             origin_img_id=origin_img_id,
@@ -80,6 +81,7 @@ async def image_change(user_google_id, img_origin_path, result_path, origin_img_
             result_dict=None,
             image=f'http://localhost:8000/{result_path}/{str(i)}return.png'
         )
+        
         # тут более-менее реальное время обработки функции, работаем над умешьшением
         time.sleep(3)
     result_dict = dict
@@ -125,11 +127,11 @@ async def apend_item_quene(user_google_id, image_origin_path, result_path, origi
                    result_path, origin_img_id])
     print(threading.active_count())
     try:
-        if threading.active_count() == 6:
-            print('thread = 6')
+        if threading.active_count() == 8:
+            print('thread = 8')
             pass
-        if threading.active_count() < 6:
-            print('thread < 6')
+        if threading.active_count() < 8:
+            print('thread < 8')
             threading.Thread(target=start_thread_upload, args=()).start()
     except:
         pass

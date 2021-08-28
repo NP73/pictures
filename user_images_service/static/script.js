@@ -40,9 +40,12 @@ if (localStorage.getItem('google_id')) {
       }).then(function (data) {
         console.log('линк добавлен',data);
         let result_count = document.querySelector('.text-result_count')
-        result_count.innerHTML = `Обработана ${data.count_res_image}/10 часть изображения`
+        result_count.innerHTML = `Обработано ${data.count_res_image}/10 часть изображения`
+        output.classList.add('not-output')
+        setTimeout(() => {
+          output.classList.remove('not-output')
+        }, 1000);
         output.src = data.result_imgs_link 
-
       })
     }
   }
@@ -66,24 +69,20 @@ let fileList
 let upload = 0
 // Функция загружает изображение в предосмотр
 function handleFiles() {
-  fileList = this.files;
+  
 
   try {
-    if(upload = 0){
+    fileList = this.files;
+    if(upload === 0){
     output.src = URL.createObjectURL(this.files[0]);
-    }
     let result_count = document.querySelector('.text-result_count')
-    try {
-      if(upload = 0){
-      result_count.classList.remove('send-rescount')
+    result_count.classList.remove('send-rescount')
     }
+
     } catch (error) {
       console.log('нет класаа');
     }
     
-  } catch (error) {
-    console.log(undefined);
-  }
 
 }
 
@@ -116,7 +115,7 @@ async function uploadImage() {
             inputElement.value = ""
             upload = 1
             let result_count = document.querySelector('.text-result_count')
-            result_count.innerHTML = `Обработана 0/10 часть изображения`
+            result_count.innerHTML = `Обработано 0/10 часть изображения`
             result_count.classList.add('send-rescount')
             // output.src = ""
           }
