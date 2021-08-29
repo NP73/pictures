@@ -18,7 +18,7 @@ import cv2
 from routers.socket_route import list_user_id_socket, manager
 from repositories.pictures import Pictures
 
-os.chdir('/usr/src/app')
+
 
 hosts = 'api-booking.ru:8000'
 queue_task = queue.Queue()
