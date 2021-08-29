@@ -19,7 +19,7 @@ from routers.socket_route import list_user_id_socket, manager
 from repositories.pictures import Pictures
 
 
-
+hosts = 'api-booking.ru'
 queue_task = queue.Queue()
 
 
@@ -75,11 +75,11 @@ async def image_change(user_google_id, img_origin_path, result_path, origin_img_
         plt.imsave(f'{result_path}/{str(i)}return.png', img_i)
         time.sleep(15)
         await add_alert_brayzer_client(
-            img_link_origin=f'http://localhost:8000/{img_origin_path}',
+            img_link_origin=f'http://{hosts}:8000/{img_origin_path}',
             origin_img_id=origin_img_id,
             user_google_id=user_google_id,
             result_dict=None,
-            image=f'http://localhost:8000/{result_path}/{str(i)}return.png'
+            image=f'http://{hosts}:8000/{result_path}/{str(i)}return.png'
         )
         
         # тут более-менее реальное время обработки функции, работаем над умешьшением
@@ -88,7 +88,7 @@ async def image_change(user_google_id, img_origin_path, result_path, origin_img_
     status = 1
     print(result_dict, status)
     await add_alert_brayzer_client(
-        img_link_origin=f'http://localhost:8000/{img_origin_path}',
+        img_link_origin=f'http://{hosts}:8000/{img_origin_path}',
         origin_img_id=origin_img_id,
         user_google_id=user_google_id,
         result_dict=result_dict,
@@ -149,7 +149,7 @@ async def save_origin_image(user_google_id, image):
         os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/result')
     with open(f"{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}", "wb") as buffer:
         shutil.copyfileobj(image.file, buffer)
-        image_link = f'http://localhost:8000/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
+        image_link = f'http://{hosts}:8000/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
     new_image = await Pictures.objects.create(
         user_id_google=user_google_id,
         img_link=image_link,
