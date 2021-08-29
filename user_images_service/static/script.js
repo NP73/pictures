@@ -173,7 +173,7 @@ function onSignIn(googleUser) {
     "spent_day_limit": 0
   }
   // отправка на сервер данных гугл
-  fetch('http://${debug_path}/api/v1/users/', {
+  fetch(`http://${debug_path}/api/v1/users/`, {
     method: 'post',
     body: JSON.stringify(data),
     headers: headers
