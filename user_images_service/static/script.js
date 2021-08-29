@@ -1,9 +1,9 @@
 let ws
 
-
+const debug_path = 'api-booking.ru:8000'
  
 if (localStorage.getItem('google_id')) {
-  ws = new WebSocket(`ws://api-booking.ru:8000/ws/${localStorage.getItem('google_id')}`);
+  ws = new WebSocket(`ws://${debug_path}/ws/${localStorage.getItem('google_id')}`);
   ws.onmessage = (event) => {
     let result = JSON.parse(event.data)
     if (result.close_result) {
@@ -13,41 +13,40 @@ if (localStorage.getItem('google_id')) {
         "result_dict": String(result.result_dict),
         "status": true,
       }
-      console.log('message result.close_result');
-      // fetch(`http://api-booking.ru:8000/api/v1/users/change_status/${localStorage.getItem('google_id')}`, {
-      //   method: 'post',
-      //   headers: headers,
-      //   body: JSON.stringify(data)
-      // }).then(function (responce) {
-      //   return responce.json();
-      // }).then(function (data) {
-      //   console.log('загрузка прошла успешно');
-      //   let result_count = document.querySelector('.text-result_count')
-      //   result_count.innerHTML = `обработка завершена`
-      //   upload = 0
-      // })
+
+      fetch(`http://${debug_path}/api/v1/users/change_status/${localStorage.getItem('google_id')}`, {
+        method: 'post',
+        headers: headers,
+        body: JSON.stringify(data)
+      }).then(function (responce) {
+        return responce.json();
+      }).then(function (data) {
+        console.log('загрузка прошла успешно');
+        let result_count = document.querySelector('.text-result_count')
+        result_count.innerHTML = `обработка завершена`
+        upload = 0
+      })
     }
     else {
       let data_add_link = {
         'img_link': result.result_image
       }
-      // fetch(`http://api-booking.ru:8000/api/v1/pictures/add_link_img/${Number(result.origin_img_id)}`, {
-      //   method: 'post',
-      //   headers: headers,
-      //   body: JSON.stringify(data_add_link)
-      // }).then(function (responce) {
-      //   return responce.json();
-      // }).then(function (data) {
-      //   console.log('линк добавлен',data);
-      //   let result_count = document.querySelector('.text-result_count')
-      //   result_count.innerHTML = `Обработано ${data.count_res_image}/10 часть изображения`
-      //   output.classList.add('not-output')
-      //   setTimeout(() => {
-      //     output.classList.remove('not-output')
-      //   }, 1000);
-      //   output.src = data.result_imgs_link 
-      // })
-      console.log('message block else');
+      fetch(`http://${debug_path}/api/v1/pictures/add_link_img/${Number(result.origin_img_id)}`, {
+        method: 'post',
+        headers: headers,
+        body: JSON.stringify(data_add_link)
+      }).then(function (responce) {
+        return responce.json();
+      }).then(function (data) {
+        console.log('линк добавлен',data);
+        let result_count = document.querySelector('.text-result_count')
+        result_count.innerHTML = `Обработано ${data.count_res_image}/10 часть изображения`
+        output.classList.add('not-output')
+        setTimeout(() => {
+          output.classList.remove('not-output')
+        }, 1000);
+        output.src = data.result_imgs_link 
+      })
     }
   }
 }
@@ -75,7 +74,6 @@ function handleFiles() {
     fileList = this.files;
     if(upload === 0){
     output.src = URL.createObjectURL(this.files[0]);
-    console.log('есть класс');
     let result_count = document.querySelector('.text-result_count')
     result_count.classList.remove('send-rescount')
     }
@@ -97,7 +95,7 @@ async function uploadImage() {
       document.querySelector('.send-load').classList.add('send-load-true')
       document.querySelector('.send').classList.add('send-text')
 
-      fetch(`http://api-booking.ru:8000/api/v1/pictures/uploadimages/${localStorage.getItem('google_id')}`, {
+      fetch(`http://${debug_path}/api/v1/pictures/uploadimages/${localStorage.getItem('google_id')}`, {
         method: 'post',
         body: formData,
 
@@ -173,9 +171,8 @@ function onSignIn(googleUser) {
     "access": true,
     "spent_day_limit": 0
   }
-  console.log('auth');
   // отправка на сервер данных гугл
-  fetch(`http://api-booking.ru:8000/api/v1/users/`, {
+  fetch(`http://${debug_path}/api/v1/users/`, {
     method: 'post',
     body: JSON.stringify(data),
     headers: headers
