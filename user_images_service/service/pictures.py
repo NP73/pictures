@@ -141,6 +141,7 @@ async def save_origin_image(user_google_id, image):
 
     path_dir = f'user_images_service/static/images'
     print(os.path.exists(f'{path_dir}'))
+    print(os.getcwd())
     return 
     # if not os.path.exists(f'{path_dir}/{user_google_id}'):
     #     os.mkdir(f'{path_dir}/{user_google_id}')
