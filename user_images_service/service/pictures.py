@@ -159,10 +159,10 @@ async def save_origin_image(user_google_id, image):
         result_imgs_link=str({}),
         result_dict=str({}),
     )
-
+    image_link = f'{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
     result_img_path = f'{path_dir}/{user_google_id}/{image.filename}/result'
     print(image_link[22:])
-    # await apend_item_quene(user_google_id, image_link[22:], result_img_path, new_image.id)
+    await apend_item_quene(user_google_id, image_link, result_img_path, new_image.id)
 
 
 async def reverse_dict_for_str_picture(picture):
