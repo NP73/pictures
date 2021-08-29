@@ -18,8 +18,9 @@ import cv2
 from routers.socket_route import list_user_id_socket, manager
 from repositories.pictures import Pictures
 
+os.chdir('/usr/src/app')
 
-hosts = 'api-booking.ru'
+hosts = 'api-booking.ru:8000'
 queue_task = queue.Queue()
 
 
@@ -75,11 +76,11 @@ async def image_change(user_google_id, img_origin_path, result_path, origin_img_
         plt.imsave(f'{result_path}/{str(i)}return.png', img_i)
         time.sleep(15)
         await add_alert_brayzer_client(
-            img_link_origin=f'http://{hosts}:8000/{img_origin_path}',
+            img_link_origin=f'http://{hosts}/{img_origin_path}',
             origin_img_id=origin_img_id,
             user_google_id=user_google_id,
             result_dict=None,
-            image=f'http://{hosts}:8000/{result_path}/{str(i)}return.png'
+            image=f'http://{hosts}/{result_path}/{str(i)}return.png'
         )
         
         # тут более-менее реальное время обработки функции, работаем над умешьшением
@@ -88,7 +89,7 @@ async def image_change(user_google_id, img_origin_path, result_path, origin_img_
     status = 1
     print(result_dict, status)
     await add_alert_brayzer_client(
-        img_link_origin=f'http://{hosts}:8000/{img_origin_path}',
+        img_link_origin=f'http://{hosts}/{img_origin_path}',
         origin_img_id=origin_img_id,
         user_google_id=user_google_id,
         result_dict=result_dict,
@@ -139,31 +140,28 @@ async def apend_item_quene(user_google_id, image_origin_path, result_path, origi
 
 async def save_origin_image(user_google_id, image):
 
-    path_dir = f'usr/src/appuser_images_service/static/images'
-    print(os.path.exists(f'{path_dir}'))
-    print(os.getcwd())
-    return 
-    # if not os.path.exists(f'{path_dir}/{user_google_id}'):
-    #     os.mkdir(f'{path_dir}/{user_google_id}')
+    path_dir = 'static/images'
+    if not os.path.exists(f'{path_dir}/{user_google_id}'):
+        os.mkdir(f'{path_dir}/{user_google_id}')
 
-    # if not os.path.exists(f'{path_dir}/{user_google_id}/{image.filename}'):
-    #     os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}')
-    #     os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/origin')
-    #     os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/result')
-    # with open(f"{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}", "wb") as buffer:
-    #     shutil.copyfileobj(image.file, buffer)
-    #     image_link = f'http://{hosts}:8000/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
-    # new_image = await Pictures.objects.create(
-    #     user_id_google=user_google_id,
-    #     img_link=image_link,
-    #     settings=str({'a': 10}),
-    #     status=False,
-    #     result_imgs_link=str({}),
-    #     result_dict=str({}),
-    # )
+    if not os.path.exists(f'{path_dir}/{user_google_id}/{image.filename}'):
+        os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}')
+        os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/origin')
+        os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/result')
+    with open(f"{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}", "wb") as buffer:
+        shutil.copyfileobj(image.file, buffer)
+        image_link = f'http://{hosts}/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
+    new_image = await Pictures.objects.create(
+        user_id_google=user_google_id,
+        img_link=image_link,
+        settings=str({'a': 10}),
+        status=False,
+        result_imgs_link=str({}),
+        result_dict=str({}),
+    )
 
-    # result_img_path = f'{path_dir}/{user_google_id}/{image.filename}/result'
-    # await apend_item_quene(user_google_id, image_link[22:], result_img_path, new_image.id)
+    result_img_path = f'{path_dir}/{user_google_id}/{image.filename}/result'
+    await apend_item_quene(user_google_id, image_link[22:], result_img_path, new_image.id)
 
 
 async def reverse_dict_for_str_picture(picture):
