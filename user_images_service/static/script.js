@@ -1,6 +1,6 @@
 let ws
 
-const debug_path = 'api-booking.ru'
+const debug_path = 'api-booking.ru:8000'
  
 if (localStorage.getItem('google_id')) {
   ws = new WebSocket(`ws://${debug_path}/ws/${localStorage.getItem('google_id')}`);
