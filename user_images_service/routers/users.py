@@ -38,3 +38,10 @@ async def update_status_user(id: str,update_picture:PictureUpdate):
         status=update_picture.status,
         result_dict = picture.settings
     )
+
+@usersapp.delete('/{id}')
+async def delete_user(google_id:str):
+    user = await Users.objects.get_or_none(id_google_client=google_id)
+    return await user.delete()
+
+   

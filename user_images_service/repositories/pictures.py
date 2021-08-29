@@ -1,12 +1,12 @@
 import datetime
 import ast
 
-from pydantic import validator
+
 import ormar
 
 
 from config.database import metadata, database
-import json
+
 
 
 class Pictures(ormar.Model):

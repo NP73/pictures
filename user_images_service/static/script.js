@@ -11,7 +11,6 @@ if (localStorage.getItem('google_id')) {
         "origin_img_id": Number(result.origin_img_id),
         "result_dict": String(result.result_dict),
         "status": true,
-
       }
 
       fetch(`http://localhost:8000/api/v1/users/change_status/${localStorage.getItem('google_id')}`, {
