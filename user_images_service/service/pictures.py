@@ -139,7 +139,7 @@ async def apend_item_quene(user_google_id, image_origin_path, result_path, origi
 
 async def save_origin_image(user_google_id, image):
 
-    path_dir = f'/usr/src/appuser_images_service/static/images'
+    path_dir = f'usr/src/appuser_images_service/static/images'
     print(os.path.exists(f'{path_dir}'))
     print(os.getcwd())
     return 
