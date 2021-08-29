@@ -2,16 +2,18 @@ from repositories.users import Users
 import ast
 
 
-from fastapi import (APIRouter,
-                     File,
-                     UploadFile
-                     )
-
+from fastapi import (
+                    APIRouter,
+                    File,
+                    UploadFile,
+                    Depends
+                    )
+from fastapi.responses import JSONResponse
 
 from schemas import pictures
 from service import users
 from service.pictures import save_origin_image
-
+from service import profile_token
 
 from repositories.pictures import Pictures
 from service.pictures import (
@@ -41,6 +43,36 @@ async def get_all():
 async def get_one(id: int):
     picture = await Pictures.objects.get_or_none(id=id)
     return await reverse_str_for_dict_picture(picture)
+
+
+@pictureapp.get('/status-image-process/{id_image}')
+async def status_image_upload(id_image:str, curent_user = Depends(profile_token.JWTBearer())):
+    if type(curent_user) != str:
+        return JSONResponse(
+        status_code=400,
+        content={
+            "status": "badd",
+            "detail": "Пользователь не авторизован",
+        },
+    )
+    else:
+        picture = await Pictures.objects.get_or_none(id=id_image)
+        if picture.user_id_google != curent_user:
+            return JSONResponse(
+            status_code=400,
+            content={
+            "status": "badd",
+            "detail": "Пользователь не относиться к данному изображению",
+            }
+            )
+        else:
+            try:
+                return await reverse_str_for_dict_picture(picture)
+            except:
+                return {'message':'нет такого изображения'}
+        
+
+
 
 
 @pictureapp.post('/add_link_img/{id_img_origin}')

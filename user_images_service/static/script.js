@@ -1,19 +1,21 @@
 let ws
 
-const debug_path = 'api-booking.ru:8000'
- 
-if (localStorage.getItem('google_id')) {
+// const debug_path = 'localhost:8000'
+
+const debug_path  = 'api-booking.ru:8000'
+
+function onwssocket(){
   ws = new WebSocket(`ws://${debug_path}/ws/${localStorage.getItem('google_id')}`);
   ws.onmessage = (event) => {
     let result = JSON.parse(event.data)
     if (result.close_result) {
-
+  
       let data = {
         "origin_img_id": Number(result.origin_img_id),
         "result_dict": String(result.result_dict),
         "status": true,
       }
-
+  
       fetch(`http://${debug_path}/api/v1/users/change_status/${localStorage.getItem('google_id')}`, {
         method: 'post',
         headers: headers,
@@ -38,21 +40,20 @@ if (localStorage.getItem('google_id')) {
       }).then(function (responce) {
         return responce.json();
       }).then(function (data) {
-        console.log('линк добавлен',data);
+        console.log('линк добавлен', data);
         let result_count = document.querySelector('.text-result_count')
         result_count.innerHTML = `Обработано ${data.count_res_image}/10 часть изображения`
         output.classList.add('not-output')
         setTimeout(() => {
           output.classList.remove('not-output')
         }, 1000);
-        output.src = data.result_imgs_link 
+        output.src = data.result_imgs_link
       })
     }
   }
 }
-else {
-  console.log('not websockket');
-}
+
+
 
 const headers = {
   "Content-Type": "application/json",
@@ -69,19 +70,41 @@ let fileList
 let upload = 0
 // Функция загружает изображение в предосмотр
 function handleFiles() {
-  
+
   try {
     fileList = this.files;
-    if(upload === 0){
-    output.src = URL.createObjectURL(this.files[0]);
-    let result_count = document.querySelector('.text-result_count')
-    result_count.classList.remove('send-rescount')
+
+    if (upload === 0) {
+      console.log(fileList[0]);
+      if (fileList[0].size > 990000) {
+        console.log('много');
+        inputElement.value = ""
+        document.querySelector('.big-image').classList.add('big-image_alert')
+        document.querySelector('.al-imag ').innerHTML = 'Изображение не должно превышать 10 Mb !'
+        setTimeout(() => {
+          document.querySelector('.big-image').classList.remove('big-image_alert')
+        }, 2000);
+      }
+      else if (!["image/jpeg", "image/jpg", "image/png"].includes(fileList[0].type)) {
+        inputElement.value = ""
+        document.querySelector('.big-image').classList.add('big-image_alert')
+        document.querySelector('.al-imag ').innerHTML = 'Только форматы jpg, jpeg или png !'
+        setTimeout(() => {
+          document.querySelector('.big-image').classList.remove('big-image_alert')
+        }, 2000);
+      }
+      else {
+        console.log(2);
+        output.src = URL.createObjectURL(this.files[0]);
+        let result_count = document.querySelector('.text-result_count')
+        result_count.classList.remove('send-rescount')
+      }
     }
 
-    } catch (error) {
-      console.log('нет класаа');
-    }
-    
+  } catch (error) {
+    console.log('нет класаа');
+  }
+
 
 }
 
@@ -132,8 +155,8 @@ async function uploadImage() {
         }
         else {
           inputElement.value = ""
-          if(upload = 0){
-          output.src = ""
+          if (upload = 0) {
+            output.src = ""
           }
           document.querySelector('.send-load').classList.remove('send-load-true')
           document.querySelector('.send').classList.remove('send-text')
@@ -182,8 +205,11 @@ function onSignIn(googleUser) {
     document.querySelector('.count-images').innerHTML = `
     загружено за 24 часа  ${data.spent_day_limit}/5
     `
-    localStorage.setItem('google_id', data.id_google_client);
+    localStorage.setItem('google_id', data.user_data.id_google_client);
+    localStorage.setItem('access_token', data.access_token);
     document.querySelector('.true-auth').classList.add('succes_upload-true')
+    onwssocket()
+
     document.querySelector('.text-al').innerHTML = `Привет,${profile.getName()}`
     setTimeout(() => {
       document.querySelector('.true-auth').classList.remove('succes_upload-true')

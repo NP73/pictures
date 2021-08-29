@@ -80,7 +80,16 @@ html {
 .send-load{
   display: none;
 }
-
+.big-image{
+  display: none;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  top: -5rem;
+}
+.big-image_alert{
+  display: block;
+}
 .send-load-true{
   display: block;
 }
