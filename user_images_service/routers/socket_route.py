@@ -42,8 +42,6 @@ async def websocket_endpoint(websocket: WebSocket, user_google_id:str, ):
                 ]
                 ):
         list_user_id_socket.append(dict_info_websocket_client)
-    print(list_user_id_socket)
-    
     await manager.connect(websocket)
     try:
         while True:
