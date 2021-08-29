@@ -29,19 +29,22 @@ manager = ConnectionManager()
 
 list_user_id_socket = []
 
+async def add_websocket_id_in_list(websocket,user_google_id):
+    dict_info_websocket_client = {'user_google_id':user_google_id,'websocket_client':websocket}
+    if len(list_user_id_socket) !=0:
+        for (ind,item) in enumerate(list_user_id_socket):
+            if dict_info_websocket_client['user_google_id'] == item['user_google_id']:
+                del list_user_id_socket[ind]  
+            else:
+                pass
+        list_user_id_socket.append(dict_info_websocket_client)    
+    elif len(list_user_id_socket) == 0:
+        list_user_id_socket.append(dict_info_websocket_client)
+
+
 @socket_rout.websocket("/ws/{user_google_id}")
 async def websocket_endpoint(websocket: WebSocket, user_google_id:str, ):
-    dict_info_websocket_client = {'user_google_id':user_google_id,'websocket_client':websocket}
-    if (
-        dict_info_websocket_client[
-            'user_google_id'
-            ] not in [
-                user_id[
-                    'user_google_id'
-                    ] for user_id in list_user_id_socket
-                ]
-                ):
-        list_user_id_socket.append(dict_info_websocket_client)
+    await add_websocket_id_in_list(websocket,user_google_id)
     await manager.connect(websocket)
     try:
         while True:
