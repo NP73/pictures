@@ -2,57 +2,58 @@ let ws
 
 
  
-// if (localStorage.getItem('google_id')) {
-//   ws = new WebSocket(`ws://api-booking.ru:8000/ws/${localStorage.getItem('google_id')}`);
-//   ws.onmessage = (event) => {
-//     let result = JSON.parse(event.data)
-//     if (result.close_result) {
+if (localStorage.getItem('google_id')) {
+  ws = new WebSocket(`ws://api-booking.ru:8000/ws/${localStorage.getItem('google_id')}`);
+  ws.onmessage = (event) => {
+    let result = JSON.parse(event.data)
+    if (result.close_result) {
 
-//       let data = {
-//         "origin_img_id": Number(result.origin_img_id),
-//         "result_dict": String(result.result_dict),
-//         "status": true,
-//       }
-
-//       fetch(`http://api-booking.ru:8000/api/v1/users/change_status/${localStorage.getItem('google_id')}`, {
-//         method: 'post',
-//         headers: headers,
-//         body: JSON.stringify(data)
-//       }).then(function (responce) {
-//         return responce.json();
-//       }).then(function (data) {
-//         console.log('загрузка прошла успешно');
-//         let result_count = document.querySelector('.text-result_count')
-//         result_count.innerHTML = `обработка завершена`
-//         upload = 0
-//       })
-//     }
-//     else {
-//       let data_add_link = {
-//         'img_link': result.result_image
-//       }
-//       fetch(`http://api-booking.ru:8000/api/v1/pictures/add_link_img/${Number(result.origin_img_id)}`, {
-//         method: 'post',
-//         headers: headers,
-//         body: JSON.stringify(data_add_link)
-//       }).then(function (responce) {
-//         return responce.json();
-//       }).then(function (data) {
-//         console.log('линк добавлен',data);
-//         let result_count = document.querySelector('.text-result_count')
-//         result_count.innerHTML = `Обработано ${data.count_res_image}/10 часть изображения`
-//         output.classList.add('not-output')
-//         setTimeout(() => {
-//           output.classList.remove('not-output')
-//         }, 1000);
-//         output.src = data.result_imgs_link 
-//       })
-//     }
-//   }
-// }
-// else {
-//   console.log('not websockket');
-// }
+      let data = {
+        "origin_img_id": Number(result.origin_img_id),
+        "result_dict": String(result.result_dict),
+        "status": true,
+      }
+      console.log('message result.close_result');
+      // fetch(`http://api-booking.ru:8000/api/v1/users/change_status/${localStorage.getItem('google_id')}`, {
+      //   method: 'post',
+      //   headers: headers,
+      //   body: JSON.stringify(data)
+      // }).then(function (responce) {
+      //   return responce.json();
+      // }).then(function (data) {
+      //   console.log('загрузка прошла успешно');
+      //   let result_count = document.querySelector('.text-result_count')
+      //   result_count.innerHTML = `обработка завершена`
+      //   upload = 0
+      // })
+    }
+    else {
+      let data_add_link = {
+        'img_link': result.result_image
+      }
+      // fetch(`http://api-booking.ru:8000/api/v1/pictures/add_link_img/${Number(result.origin_img_id)}`, {
+      //   method: 'post',
+      //   headers: headers,
+      //   body: JSON.stringify(data_add_link)
+      // }).then(function (responce) {
+      //   return responce.json();
+      // }).then(function (data) {
+      //   console.log('линк добавлен',data);
+      //   let result_count = document.querySelector('.text-result_count')
+      //   result_count.innerHTML = `Обработано ${data.count_res_image}/10 часть изображения`
+      //   output.classList.add('not-output')
+      //   setTimeout(() => {
+      //     output.classList.remove('not-output')
+      //   }, 1000);
+      //   output.src = data.result_imgs_link 
+      // })
+      console.log('message block else');
+    }
+  }
+}
+else {
+  console.log('not websockket');
+}
 
 const headers = {
   "Content-Type": "application/json",
