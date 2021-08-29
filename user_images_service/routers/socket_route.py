@@ -41,6 +41,8 @@ async def add_websocket_id_in_list(websocket,user_google_id):
     elif len(list_user_id_socket) == 0:
         list_user_id_socket.append(dict_info_websocket_client)
 
+    print(list_user_id_socket)
+
 
 @socket_rout.websocket("/ws/{user_google_id}")
 async def websocket_endpoint(websocket: WebSocket, user_google_id:str, ):
