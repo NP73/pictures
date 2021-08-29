@@ -53,6 +53,7 @@ async def websocket_endpoint(websocket: WebSocket, user_google_id:str, ):
             data = await websocket.receive_text()
             await manager.send_personal_message(f"You wrote: {data}", websocket)
     except WebSocketDisconnect:
+        print('exxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
         manager.disconnect(websocket)
         await manager.broadcast(f"Client # left the chat")
 
