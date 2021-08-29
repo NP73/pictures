@@ -143,25 +143,25 @@ async def save_origin_image(user_google_id, image):
     path_dir = 'static/images'
     if not os.path.exists(f'{path_dir}/{user_google_id}'):
         os.mkdir(f'{path_dir}/{user_google_id}')
-        print(os.path.exists('static/images'))
 
-    # if not os.path.exists(f'{path_dir}/{user_google_id}/{image.filename}'):
-    #     os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}')
-    #     os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/origin')
-    #     os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/result')
-    # with open(f"{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}", "wb") as buffer:
-    #     shutil.copyfileobj(image.file, buffer)
-    #     image_link = f'http://{hosts}/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
-    # new_image = await Pictures.objects.create(
-    #     user_id_google=user_google_id,
-    #     img_link=image_link,
-    #     settings=str({'a': 10}),
-    #     status=False,
-    #     result_imgs_link=str({}),
-    #     result_dict=str({}),
-    # )
+    if not os.path.exists(f'{path_dir}/{user_google_id}/{image.filename}'):
+        os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}')
+        os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/origin')
+        os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/result')
+    with open(f"{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}", "wb") as buffer:
+        shutil.copyfileobj(image.file, buffer)
+        image_link = f'http://{hosts}/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
+    new_image = await Pictures.objects.create(
+        user_id_google=user_google_id,
+        img_link=image_link,
+        settings=str({'a': 10}),
+        status=False,
+        result_imgs_link=str({}),
+        result_dict=str({}),
+    )
 
-    # result_img_path = f'{path_dir}/{user_google_id}/{image.filename}/result'
+    result_img_path = f'{path_dir}/{user_google_id}/{image.filename}/result'
+    print(image_link[22:])
     # await apend_item_quene(user_google_id, image_link[22:], result_img_path, new_image.id)
 
 
