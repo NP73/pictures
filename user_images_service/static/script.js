@@ -203,7 +203,7 @@ function onSignIn(googleUser) {
     return responce.json();
   }).then(function (data) {
     document.querySelector('.count-images').innerHTML = `
-    загружено за 24 часа  ${data.spent_day_limit}/5
+    загружено за 24 часа  ${data.user_data.spent_day_limit}/5
     `
     localStorage.setItem('google_id', data.user_data.id_google_client);
     localStorage.setItem('access_token', data.access_token);
