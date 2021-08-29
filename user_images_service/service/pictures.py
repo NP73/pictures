@@ -22,7 +22,7 @@ from repositories.pictures import Pictures
 
 
 # hosts = 'localhost:8000'
-host = 'api-booking.ru:8000'
+hosts = 'api-booking.ru:8000'
 queue_task = queue.Queue()
 
 

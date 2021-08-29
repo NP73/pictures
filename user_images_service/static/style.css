@@ -82,13 +82,14 @@ html {
 }
 .big-image{
   display: none;
+
+}
+.big-image_alert{
+  display: block;
   width: 100%;
   position: absolute;
   z-index: 1;
   top: -5rem;
-}
-.big-image_alert{
-  display: block;
 }
 .send-load-true{
   display: block;
