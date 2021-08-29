@@ -10,6 +10,7 @@ import os
 import shutil
 
 from fastapi.encoders import jsonable_encoder
+from fastapi import WebSocketDisconnect
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
@@ -38,32 +39,32 @@ async def add_alert_brayzer_client(
             user_data for user_data in list_user_id_socket
             if user_data['user_google_id'] == user_google_id
         ][0])
-        print('usertry')
         if image:
-            print('imagetry')
-            # await manager.send_personal_message(jsonable_encoder(
-            #     {'close_result': False,
-            #      'origin_img_id': origin_img_id,
-            #      'img_link_origin': img_link_origin,
-            #      'result_image': image,
-            #      'user_google_id': user_google_id,
-            #      'result_dict': result_dict,
-            #      }
-            # ), user_connect['websocket_client'])
+            await manager.send_personal_message(jsonable_encoder(
+                {'close_result': False,
+                 'origin_img_id': origin_img_id,
+                 'img_link_origin': img_link_origin,
+                 'result_image': image,
+                 'user_google_id': user_google_id,
+                 'result_dict': result_dict,
+                 }
+            ), user_connect['websocket_client'])
         else:
-            print('not  image')
-            # await manager.send_personal_message(jsonable_encoder(
-            #     {
-            #         'close_result': True,
-            #         'origin_img_id': origin_img_id,
-            #         'img_link_origin': img_link_origin,
-            #         'result_image': None,
-            #         'user_google_id': user_google_id,
-            #         'result_dict': result_dict,
-            #     }
-            # ), user_connect['websocket_client'])
+            try:
+                await manager.send_personal_message(jsonable_encoder(
+                    {
+                        'close_result': True,
+                        'origin_img_id': origin_img_id,
+                        'img_link_origin': img_link_origin,
+                        'result_image': None,
+                        'user_google_id': user_google_id,
+                        'result_dict': result_dict,
+                    }
+                ), user_connect['websocket_client'])
+            except WebSocketDisconnect:
+                manager.disconnect(user_connect['websocket_client'])
+                await manager.broadcast(f"Client # left the chat")
     else:
-        print('not  user')
         pass
 
     return 'ok'
