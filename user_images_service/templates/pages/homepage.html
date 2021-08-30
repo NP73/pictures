@@ -5,9 +5,12 @@
     <section>
 
         <div class="form-images">
-            <div style="width: 100%;min-height: 13rem;padding-top: 2rem;position:relative" class="text-center">
+            <div class="boxx-img text-center">
                 <img style="max-width:10rem" id="output" />
-                <p class="text-result_count"></p>
+    
+                <p class="text-result_count">
+                 
+                </p>
             </div>
 
             <div class="input-group" style="position: relative;">
@@ -29,27 +32,12 @@
                 </div>
                 <div class="true-auth text-center">
                     <div class="text-al alert alert-success" role="alert">
-
-                    </div>
-                </div>
-                <div class="asses-images text-center">
-                    <div class="alert  alert-info" role="alert">
-                        Дождитесь обработки изображения!
-                    </div>
-                </div>
-                <div class="big-image text-center">
-                    <div class="alert al-imag alert-info" role="alert">
-                       
-                    </div>
-                </div>
-                <div class="limit-images text-center">
-                    <div class="alert alert-info" role="alert">
-                        Вы исчерпали дневной лимит! <br> Попробуйте позже
+                        
                     </div>
                 </div>
                 <input onchange="handleFiles(this.files)" style="width: 100%;margin-top:2rem" type="file" class="form-control"
                     id="inputGroupFile03" aria-describedby="inputGroupFileAddon03" aria-label="Upload">
-                <p style="width: 100%;" class="text-center pt-3">загрузите изображение</p>
+                <!-- <p style="width: 100%;" class="text-pred text-center pt-3">загрузите изображение</p> -->
                 <p style="width: 100%;font-size: 1.4rem;color: #669ed5;" class="count-images text-center pt-3"></p>
                 <div class="text-center" style="width: 100%;">
                     <button onclick="uploadImage()" type="button" class="btn btn-outline-success">
@@ -57,7 +45,9 @@
                             <span class="sr-only">Loading...</span>
                         </div>
                         <span class="send">Отправить</span>
+            
                     </button>
+       
                 </div>
             </div>
         </div>

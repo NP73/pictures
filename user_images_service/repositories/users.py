@@ -47,8 +47,14 @@ class Users(ormar.Model):
     email: str = ormar.String(max_length=255, null=True)
     password: str = ormar.String(max_length=1000, null=True)
     access: bool = ormar.Boolean(default=False)
+    day_limit:int = ormar.Integer(default=5)
     spent_day_limit: int = ormar.Integer(default=0)
-    last_timestamp: str = ormar.String(max_length=1000, null=True,default='')
+    last_uploaded_image_id:str = ormar.String(max_length=1000, nullable=True,null=True)
+    last_timestamp_image: datetime.datetime = ormar.DateTime(
+                                              nullable=True,
+                                              null=True,
+                                              default=None
+                                              )
 
     class Config:
         orm_mode = True

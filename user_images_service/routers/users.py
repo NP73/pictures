@@ -1,4 +1,5 @@
-from fastapi import APIRouter,  Depends
+from typing import Optional
+from fastapi import APIRouter,  Depends,BackgroundTasks
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
@@ -57,19 +58,33 @@ async def get_one(id: int):
     return await Users.objects.get_or_none(id=id)
 
 @usersapp.post('/change_status/{id}')
-async def update_status_user(id: str,update_picture:PictureUpdate):
+async def update_status_user(id: str):
     user = await Users.objects.get_or_none(id_google_client=id)
-    await user.update(access = 1)
-    picture = await Pictures.objects.get_or_none(id=update_picture.origin_img_id)
+    picture = await Pictures.objects.get_or_none(id=user.last_uploaded_image_id)
     return await picture.update(
-        status=update_picture.status,
-        result_dict = picture.settings
+        status=True,
     )
+
+@usersapp.post('/change_access_func/{google_id}')
+async def change_asses_func(google_id:str,day_limit: Optional[int] = 5, status:Optional[bool]= True):
+    user = await Users.objects.get_or_none(id_google_client=google_id)
+    return await user.update(access=status,day_limit=day_limit)
+  
+
+
 
 @usersapp.delete('/{id}')
 async def delete_user(google_id:str):
     user = await Users.objects.get_or_none(id_google_client=google_id)
     return await user.delete()
+
+@usersapp.post('/ddd/{id}')
+async def ddddddelete_user(google_id:str):
+    user = await Users.objects.all()
+    return user
+
+
+    
 
 
    

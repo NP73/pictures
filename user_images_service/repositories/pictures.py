@@ -35,7 +35,7 @@ class Pictures(ormar.Model):
     result_imgs_link: str = ormar.String(max_length=10000)
     result_dict: str = ormar.String(max_length=1000)
     timestamp: datetime.datetime = ormar.DateTime(
-        default=datetime.datetime.now)
+        default=datetime.datetime.now())
 
     class Config:
         orm_mode = True

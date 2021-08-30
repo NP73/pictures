@@ -59,6 +59,7 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
+
 app.include_router(
     usersapp,
     tags=["users"]

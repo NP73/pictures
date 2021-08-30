@@ -3,8 +3,9 @@ import time
 import asyncio
 import threading
 import queue
-import random
+import requests
 from typing import Optional
+import json
 
 import os
 import shutil
@@ -21,9 +22,11 @@ from repositories.pictures import Pictures
 
 
 
+headers = {
+    "Content-Type": "application/json",
+}
 # hosts = 'localhost:8000'
 hosts = 'api-booking.ru:8000'
-queue_task = queue.Queue()
 
 
 async def add_alert_brayzer_client(
@@ -31,6 +34,7 @@ async def add_alert_brayzer_client(
         origin_img_id,
         user_google_id: str,
         result_dict,
+        count_res_image,
         image: Optional[str] = None):
     if (user_google_id in [user_id['user_google_id']
                            for user_id in
@@ -48,6 +52,7 @@ async def add_alert_brayzer_client(
                  'result_image': image,
                  'user_google_id': user_google_id,
                  'result_dict': result_dict,
+                 'count_res_image': count_res_image
                  }
             ), user_connect['websocket_client'])
         else:
@@ -68,7 +73,36 @@ async def add_alert_brayzer_client(
         pass
 
     return 'ok'
+async def send_link_image(result_path,img_origin_path,origin_img_id,user_google_id,i):
+    image = f'http://{hosts}/{result_path}/{str(i)}return.png',
+    url = f'http://localhost:8000/api/v1/pictures/add_link_img/{origin_img_id}'
+    data = {
+        "img_link": f'http://{hosts}/{result_path}/{str(i)}return.png'
+    }
+    res = requests.post(url=url, data=json.dumps(data), headers=headers)
+    count_link = res.json()
+    await add_alert_brayzer_client(
+        img_link_origin=f'http://{hosts}/{img_origin_path}',
+        origin_img_id=origin_img_id,
+        user_google_id=user_google_id,
+        result_dict=None,
+        count_res_image=count_link['count_res_image'],
+        image=f'http://{hosts}/{result_path}/{str(i)}return.png',
 
+    )
+
+async def send_result_client(img_origin_path,origin_img_id,user_google_id,result_dict):
+    requests.post(
+        f'http://localhost:8000/api/v1/users/change_status/{user_google_id}',
+    )
+    await add_alert_brayzer_client(
+        img_link_origin=f'http://{hosts}/{img_origin_path}',
+        origin_img_id=origin_img_id,
+        user_google_id=user_google_id,
+        result_dict=result_dict,
+        count_res_image=10,
+        image=''
+    )
 
 async def image_change(user_google_id, img_origin_path, result_path, origin_img_id, dict: Optional[dict] = {}):
     image = cv2.imread(img_origin_path)
@@ -79,45 +113,23 @@ async def image_change(user_google_id, img_origin_path, result_path, origin_img_
         img_i = size_image*int(i/k+1)
         # рисунки сохраняются в одну папку
         plt.imsave(f'{result_path}/{str(i)}return.png', img_i)
-        time.sleep(15)
-        await add_alert_brayzer_client(
-            img_link_origin=f'http://{hosts}/{img_origin_path}',
-            origin_img_id=origin_img_id,
-            user_google_id=user_google_id,
-            result_dict=None,
-            image=f'http://{hosts}/{result_path}/{str(i)}return.png'
-        )
-        
+        time.sleep(5)
+     
+        await send_link_image(result_path,img_origin_path,origin_img_id,user_google_id,i)
         # тут более-менее реальное время обработки функции, работаем над умешьшением
-        time.sleep(3)
     result_dict = dict
     status = 1
-    print(result_dict, status)
-    await add_alert_brayzer_client(
-        img_link_origin=f'http://{hosts}/{img_origin_path}',
-        origin_img_id=origin_img_id,
-        user_google_id=user_google_id,
-        result_dict=result_dict,
-        image=''
-
-    )
+    await send_result_client(img_origin_path,origin_img_id,user_google_id,result_dict)
     # возвращается выходной словарь и сигнал о завершении работы функции
     return result_dict, status
 
 
-async def upload_images():
-    len_task_item = queue_task.qsize()
-    while len_task_item:
-        client = queue_task.get()
-        print(
-            f'добавлено изображение на обработку от клиента с id {client[0]},image:{client[1]}')
-        user_google_id = client[0]
-        image_origin_path = client[1]
-        result_path = client[2]
-        origin_img_id = client[3]
-        await image_change(user_google_id, image_origin_path, result_path, origin_img_id, dict={})
-        queue_task.task_done()
-        len_task_item = queue_task.qsize()
+async def upload_images(user_google_id, image_origin_path, result_path, origin_img_id):
+    user_google_id = user_google_id
+    image_origin_path = image_origin_path
+    result_path = result_path
+    origin_img_id = origin_img_id
+    await image_change(user_google_id, image_origin_path, result_path, origin_img_id, dict={})
 
 
 def start_thread_upload():
@@ -126,6 +138,11 @@ def start_thread_upload():
     asyncio.set_event_loop(loop)
     loop.run_until_complete(upload_images())
     loop.close()
+
+
+def for_async(user_google_id, image_origin_path, result_path, origin_img_id):
+    asyncio.run(upload_images(user_google_id,
+                image_origin_path, result_path, origin_img_id))
 
 
 async def apend_item_quene(user_google_id, image_origin_path, result_path, origin_img_id):
@@ -143,8 +160,8 @@ async def apend_item_quene(user_google_id, image_origin_path, result_path, origi
         pass
 
 
-async def save_origin_image(user_google_id, image):
-
+async def save_origin_image(user_google_id, image, task):
+    print('save')
     path_dir = 'static/images'
     if not os.path.exists(f'{path_dir}/{user_google_id}'):
         os.mkdir(f'{path_dir}/{user_google_id}')
@@ -167,7 +184,11 @@ async def save_origin_image(user_google_id, image):
     image_link = f'{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
     result_img_path = f'{path_dir}/{user_google_id}/{image.filename}/result'
     print(image_link[22:])
-    await apend_item_quene(user_google_id, image_link, result_img_path, new_image.id)
+
+    task.add_task(for_async, user_google_id, image_link,
+                  result_img_path, new_image.id)
+    # await apend_item_quene(user_google_id, image_link, result_img_path, new_image.id)
+    return new_image.timestamp, new_image.id
 
 
 async def reverse_dict_for_str_picture(picture):
@@ -184,4 +205,7 @@ async def reverse_str_for_dict_picture(picture):
     picture['settings'] = ast.literal_eval(picture['settings'])
     return [picture]
 
-queue_task.join()
+
+async def get_status_upload_image(image_id):
+    picture = await Pictures.objects.get_or_none(id=image_id)
+    return picture

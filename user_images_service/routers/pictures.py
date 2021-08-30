@@ -6,7 +6,8 @@ from fastapi import (
                     APIRouter,
                     File,
                     UploadFile,
-                    Depends
+                    Depends,
+                    BackgroundTasks
                     )
 from fastapi.responses import JSONResponse
 
@@ -90,26 +91,16 @@ async def add_result_img_link_for_origin(id_img_origin: int,link_image:pictures.
         }
 
 @pictureapp.post("/uploadimages/{user_google_id}")
-async def create_upload_file(user_google_id: str,image: UploadFile = File(...)):
-
-    user_asses = await Users.objects.get(id_google_client=user_google_id)
-
-    if user_asses.access:
-        user, count_limit = await users.get_count_images_user_id(user_google_id)
-        if user:
-            await save_origin_image(user_google_id,image)
-            return {'message': True, "limit": f'{user_asses.spent_day_limit}/5','asses':user_asses.access}
-        else:
-            return {'message': False, "limit": f'{count_limit}/5','asses':user_asses.access}
-
-    else:
-         return {'message': False, "limit": f'{user_asses.spent_day_limit}/5','asses':user_asses.access}
+async def create_upload_file(user_google_id: str,background_tasks: BackgroundTasks,image: UploadFile = File(...)):
+    return await users.user_data_upload(user_google_id, image,background_tasks)
    
-    
+    # await save_origin_image(user_google_id,image)
 
 
 
-
+# 1 проверяем есть ли доступ к функции у юсера access
+# 2 проверяем есть ли остаточный лимит загрузок изображений spent_day_limit  <  day_limit
+# 3 проверяем есть ли обработка в данный момент изображения последнего загруженного
 
 
     
