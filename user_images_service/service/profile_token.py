@@ -5,10 +5,10 @@ from fastapi import Request
 from jose import JWTError, jwt
 
 from config.settings  import settings
-from repositories.users import Users
 
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 # время жизни токена в минутах
 
 ALGORITHM = "HS256"
 
@@ -16,6 +16,11 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 class JWTBearer(HTTPBearer):
+
+    """
+    Класс верефикации действительности токена по
+    id_google пользователя
+    """
 
     def __init__(
         self,
@@ -28,8 +33,14 @@ class JWTBearer(HTTPBearer):
             )
 
     async def __call__(
+
         self, request: Request
         ):
+
+        """
+        Проверяет есть ли такой токен в базе токенов
+        """
+
         credentials: HTTPAuthorizationCredentials = await super(
                             JWTBearer, self
                             ).__call__(
@@ -44,6 +55,11 @@ class JWTBearer(HTTPBearer):
         self,
         token: str 
         ):
+
+        """
+        Принимает токен и конвертирует его в данные пользователя
+        """
+        
         try:
             payload = jwt.decode(
             token,

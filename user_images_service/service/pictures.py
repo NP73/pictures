@@ -36,6 +36,15 @@ async def add_alert_brayzer_client(
         result_dict,
         count_res_image,
         image: Optional[str] = None):
+
+    """
+    Функция отправки статуса обработки
+    и только что созданных результирующих изображений 
+    клиенту в браузер 
+
+    Работает на вебсокетах!)
+    """
+    
     if (user_google_id in [user_id['user_google_id']
                            for user_id in
                            list_user_id_socket]
@@ -73,7 +82,17 @@ async def add_alert_brayzer_client(
         pass
 
     return 'ok'
+
+
 async def send_link_image(result_path,img_origin_path,origin_img_id,user_google_id,i):
+    """
+    1 - передает серверу ,
+    что обработано изображение и есть результирующее
+    изображение,сервер его сохраняет(функция выполнения папка routes
+    файл pictures  функция  add_result_img_link_for_origin)
+    2 - передает данные в функцию add_alert_brayzer_client
+    для отправки данных по вебсокетам
+    """
     image = f'http://{hosts}/{result_path}/{str(i)}return.png',
     url = f'http://localhost:8000/api/v1/pictures/add_link_img/{origin_img_id}'
     data = {
@@ -92,6 +111,18 @@ async def send_link_image(result_path,img_origin_path,origin_img_id,user_google_
     )
 
 async def send_result_client(img_origin_path,origin_img_id,user_google_id,result_dict):
+
+    """
+    1 - передает серверу ,
+    что обработка изображения закончена 
+    сервер сохраняет данные и ставит статус в Pictures оригинального изображения 
+    status = True
+    (функция выполнения папка routes
+    файл users  функция  add_result_img_link_for_origin)
+    2 - передает данные в функцию update_status_user
+    для отправки данных по вебсокетам
+    """
+
     requests.post(
         f'http://localhost:8000/api/v1/users/change_status/{user_google_id}',
     )
@@ -105,6 +136,9 @@ async def send_result_client(img_origin_path,origin_img_id,user_google_id,result
     )
 
 async def image_change(user_google_id, img_origin_path, result_path, origin_img_id, dict: Optional[dict] = {}):
+    """
+    функция обработчик изображений 
+    """
     image = cv2.imread(img_origin_path)
     dict['a'] = 10
     size_image = np.copy(image[..., 0:3])  # убираем лишнюю размерность
@@ -114,17 +148,32 @@ async def image_change(user_google_id, img_origin_path, result_path, origin_img_
         # рисунки сохраняются в одну папку
         plt.imsave(f'{result_path}/{str(i)}return.png', img_i)
         time.sleep(5)
-     
+
+        """
+        send_link_image - передает серверу ,
+        что обработано изображение и есть результирующее
+        изображение
+        """
+
         await send_link_image(result_path,img_origin_path,origin_img_id,user_google_id,i)
         # тут более-менее реальное время обработки функции, работаем над умешьшением
     result_dict = dict
     status = 1
+
+    """
+    send_result_client - передает серверу ,что обработка закончена
+    """
     await send_result_client(img_origin_path,origin_img_id,user_google_id,result_dict)
     # возвращается выходной словарь и сигнал о завершении работы функции
     return result_dict, status
 
 
 async def upload_images(user_google_id, image_origin_path, result_path, origin_img_id):
+
+    """
+    отправляет данные функции обработчику изображений  - image_change
+    """
+
     user_google_id = user_google_id
     image_origin_path = image_origin_path
     result_path = result_path
@@ -132,66 +181,91 @@ async def upload_images(user_google_id, image_origin_path, result_path, origin_i
     await image_change(user_google_id, image_origin_path, result_path, origin_img_id, dict={})
 
 
-def start_thread_upload():
-    print('start_thread_upload')
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(upload_images())
-    loop.close()
-
 
 def for_async(user_google_id, image_origin_path, result_path, origin_img_id):
+
+    """
+    передает из потока функцию для ее асинхронного выполнения
+    """
+
     asyncio.run(upload_images(user_google_id,
                 image_origin_path, result_path, origin_img_id))
 
 
-async def apend_item_quene(user_google_id, image_origin_path, result_path, origin_img_id):
-    queue_task.put([user_google_id, image_origin_path,
-                   result_path, origin_img_id])
-    print(threading.active_count())
-    try:
-        if threading.active_count() == 8:
-            print('thread = 8')
-            pass
-        if threading.active_count() < 8:
-            print('thread < 8')
-            threading.Thread(target=start_thread_upload, args=()).start()
-    except:
-        pass
+
 
 
 async def save_origin_image(user_google_id, image, task):
-    print('save')
+
+    """
+    сохраняет изображение и создает под них папки по соответсвию
+    - папка origin -под оригинальное изображение
+    - папка result - под результирующее изображение
+    все изображения сохраняються в каталоге static/images
+    """
+
     path_dir = 'static/images'
     if not os.path.exists(f'{path_dir}/{user_google_id}'):
+
+        """
+        Если такого пути еще нет создается папка которая соответсвует(ее название)
+        google id пользователя
+        """
+
         os.mkdir(f'{path_dir}/{user_google_id}')
 
     if not os.path.exists(f'{path_dir}/{user_google_id}/{image.filename}'):
+
+        """
+        создается папка origin и result,(если их еще нет)
+        в папке которая соответсвует(ее название)
+        google id пользователя 
+        """
+
         os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}')
         os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/origin')
         os.mkdir(f'{path_dir}/{user_google_id}/{image.filename}/result')
     with open(f"{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}", "wb") as buffer:
+        
+        """
+        сохраняет изображение в созданные выше папки
+        """
+
         shutil.copyfileobj(image.file, buffer)
         image_link = f'http://{hosts}/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
+    
+    """
+    Pictures.objects.create - сохраняет изображение
+
+    """
+
     new_image = await Pictures.objects.create(
         user_id_google=user_google_id,
         img_link=image_link,
         settings=str({'a': 10}),
         status=False,
         result_imgs_link=str({}),
-        result_dict=str({}),
+        result_dict=str({'a': 0}),
     )
     image_link = f'{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
     result_img_path = f'{path_dir}/{user_google_id}/{image.filename}/result'
-    print(image_link[22:])
+    
+    """
+    task.add_task -передает обработку сохраненного изображения в отельный поток
+
+    """
 
     task.add_task(for_async, user_google_id, image_link,
                   result_img_path, new_image.id)
-    # await apend_item_quene(user_google_id, image_link, result_img_path, new_image.id)
     return new_image.timestamp, new_image.id
 
 
 async def reverse_dict_for_str_picture(picture):
+
+    """
+    Конвертирует словарь в строку  
+    """
+
     picture.result_imgs_link = str(picture.result_imgs_link)
     picture.result_dict = str(picture.result_dict)
     picture.settings = str(picture.settings)
@@ -199,6 +273,11 @@ async def reverse_dict_for_str_picture(picture):
 
 
 async def reverse_str_for_dict_picture(picture):
+
+    """
+    Конвертирует строку в словарь
+    """
+
     picture = picture.dict()
     picture['result_imgs_link'] = ast.literal_eval(picture['result_imgs_link'])
     picture['result_dict'] = ast.literal_eval(picture['result_dict'])
@@ -207,5 +286,10 @@ async def reverse_str_for_dict_picture(picture):
 
 
 async def get_status_upload_image(image_id):
+
+    """
+    Возвращает статус обработки изображени
+    """
+
     picture = await Pictures.objects.get_or_none(id=image_id)
     return picture

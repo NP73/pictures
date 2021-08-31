@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from config.settings import settings
+from repositories.users import Users
 
 templatesapp = APIRouter(
     responses={404: {"description": "Not found"}}
@@ -13,6 +14,11 @@ templates = Jinja2Templates(directory="templates")
 
 @templatesapp.get('/', response_class=HTMLResponse)
 def get_homepage(request: Request):
+
+    """
+    возвращает главную страницу HTML
+    """
+    
     return templates.TemplateResponse(
         "pages/homepage.html", {
             "request": request,
@@ -20,3 +26,4 @@ def get_homepage(request: Request):
             "secret_key_google_auth":settings.secret_key_google_auth
             }
         )
+

@@ -65,6 +65,18 @@ html {
 .text-result_count{
   display: none;
 }
+#upl-image{
+  /* display: block; */
+}
+.pred-image{
+  display: none;
+}
+.pred2{
+  display: block;
+}
+.upl-image{
+  display: none;
+}
 .send-rescount{
   display: block;
   position: absolute;

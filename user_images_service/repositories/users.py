@@ -17,6 +17,7 @@ class Users(ormar.Model):
         password - HASH пароля пользователя
 
         access- разрешен ли пользователю доступ к основной функции
+        last_uploaded_image_id - йд последнего добавленного изображения для обработки
 
         spent_day_limit - сколько израсходовано из суточного лимита
 
@@ -33,7 +34,7 @@ class Users(ormar.Model):
           счетчик обнуляеться до числа 0 и  идет загрузка нового изображения и после чего уже 
           в обновленный счетчик добавляется 1 и в последующем соблюдается пункт 1
 
-        last_timestamp - дата и время  последней удачной загрузки картинки
+        last_timestamp_image - дата и время  последней удачной загрузки картинки
 
     """
 
@@ -46,15 +47,16 @@ class Users(ormar.Model):
     id_google_client: str = ormar.String(max_length=1000, null=True)
     email: str = ormar.String(max_length=255, null=True)
     password: str = ormar.String(max_length=1000, null=True)
-    access: bool = ormar.Boolean(default=False)
-    day_limit:int = ormar.Integer(default=5)
+    access: bool = ormar.Boolean(default=True)
+    day_limit: int = ormar.Integer(default=5)
     spent_day_limit: int = ormar.Integer(default=0)
-    last_uploaded_image_id:str = ormar.String(max_length=1000, nullable=True,null=True)
+    last_uploaded_image_id: str = ormar.String(
+        max_length=1000, nullable=True, null=True)
     last_timestamp_image: datetime.datetime = ormar.DateTime(
-                                              nullable=True,
-                                              null=True,
-                                              default=None
-                                              )
+        nullable=True,
+        null=True,
+        default=None
+    )
 
     class Config:
         orm_mode = True

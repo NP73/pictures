@@ -5,6 +5,11 @@ from typing import Optional
 
 
 class PictureCreate(BaseModel):
+    """
+    схема для создания
+    оригинального изображения
+    таблицы Pictures
+    """
     user_id_google: str
     img_link: str
     settings: dict
@@ -13,23 +18,29 @@ class PictureCreate(BaseModel):
 
 
 class PictureInfo(PictureCreate):
+    """
+    схема для получения информации
+    таблицы Pictures
+    """
     id: int
     timestamp: str
 
 
 class PictureUpdate(BaseModel):
+    """
+    схема для получения обновления 
+    полей таблицы Pictures
+    """
     origin_img_id :int
     result_dict: str
     status: bool
 
 
 class LinkImage(BaseModel):
+    """
+    схема для получения ссылки в словарь
+    оригинального изображения
+    таблицы Pictures
+    """
     img_link:str
 
-        #    "user_id_google":localStorage.getItem('google_id'),
-        # "img_link": result.img_link,
-        # "origin_img_id":result.origin_img_id,
-        # "settings": String(result.result_dict),
-        # "status": true,
-        # "result_imgs_link": "{}",
-        # "result_dict": String(result.result_dict),

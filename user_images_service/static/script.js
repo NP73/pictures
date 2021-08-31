@@ -3,7 +3,7 @@ let ws
 // const debug_path = 'localhost:8000'
 
 const debug_path  = 'api-booking.ru:8000'
-
+let count_etap
 function onwssocket() {
   ws = new WebSocket(`ws://${debug_path}/ws/${localStorage.getItem('google_id')}`);
   ws.onmessage = (event) => {
@@ -11,14 +11,20 @@ function onwssocket() {
     if (result.close_result) {
 
       let result_count = document.querySelector('.text-result_count')
+      result_count.classList.add('send-rescount')
       result_count.innerHTML = `обработка завершена`
+      document.querySelector('.status').innerHTML = `Статус обработки: Завершена`
       upload = 0
 
     }
     else {
 
       console.log('линк добавлен', result.result_image);
+
       let result_count = document.querySelector('.text-result_count')
+      result_count.classList.add('send-rescount')
+      count_etap = result.count_res_image
+      document.querySelector('.count_etap ').innerHTML = `Обработано: ${count_etap} из 10`
       result_count.innerHTML = `Обработано ${result.count_res_image}/10 часть изображения`
       output.classList.add('not-output')
       setTimeout(() => {
@@ -186,7 +192,63 @@ function signOut() {
   auth2.signOut().then(function () {
     console.log('User signed out.');
     localStorage.removeItem('google_id');
+    localStorage.removeItem('access_token');
+
     document.querySelector('.g-signin2').classList.remove('g-signintrue')
     document.querySelector('.exit-google').classList.remove('exit-googlesign')
   });
+}
+
+function predImage() {
+  let st
+  let headers2 = {
+    "Content-Type": "application/json",
+    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+  }
+  fetch(`http://localhost:8000/api/v1/pictures/status-image-process/pred`, {
+    method: 'get',
+    headers: headers2
+  }).then(function (responce) {
+
+    st = responce.status
+    return responce.json();
+  }).then(function (data) {
+    if (st === 200) {
+      console.log(data[0].id);
+      let status
+      if (data[0].status) {
+        status = 'Завершен'
+      }
+      else {
+        if (data[0].settings === data[0].result_dict) {
+          status = 'Завершено'
+        }
+        else {
+          status = 'В процессе'
+
+        }
+
+      }
+      count_etap = data[0].result_dict.a
+      document.querySelector('.status').innerHTML = `Статус обработки: ${status}`
+      document.querySelector('.count_etap ').innerHTML = `Обработано: ${count_etap} из 10`
+      document.querySelector('#upl-image').classList.add('upl-image')
+      document.querySelector('.pred-image').classList.add('pred2')
+    }
+    else {
+      document.querySelector('.true-auth').classList.add('succes_upload-true')
+      document.querySelector('.text-al').innerHTML = `${data.detail}`
+      setTimeout(() => {
+        document.querySelector('.true-auth').classList.remove('succes_upload-true')
+      }, 2000);
+    }
+
+  });
+
+
+}
+
+function onhome() {
+  document.querySelector('#upl-image').classList.remove('upl-image')
+  document.querySelector('.pred-image').classList.remove('pred2')
 }
