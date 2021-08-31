@@ -54,7 +54,8 @@ async def add_alert_brayzer_client(
             if user_data['user_google_id'] == user_google_id
         ][0])
         if image:
-            await manager.send_personal_message(jsonable_encoder(
+            try:
+                await manager.send_personal_message(jsonable_encoder(
                 {'close_result': False,
                  'origin_img_id': origin_img_id,
                  'img_link_origin': img_link_origin,
@@ -63,7 +64,9 @@ async def add_alert_brayzer_client(
                  'result_dict': result_dict,
                  'count_res_image': count_res_image
                  }
-            ), user_connect['websocket_client'])
+                ), user_connect['websocket_client'])
+            except WebSocketDisconnect:
+                manager.disconnect(user_connect['websocket_client'])
         else:
             try:
                 await manager.send_personal_message(jsonable_encoder(
