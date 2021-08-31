@@ -65,8 +65,9 @@ async def add_alert_brayzer_client(
                  'count_res_image': count_res_image
                  }
                 ), user_connect['websocket_client'])
-            except WebSocketDisconnect:
-                manager.disconnect(user_connect['websocket_client'])
+            except :
+                return
+                # manager.disconnect(user_connect['websocket_client'])
         else:
             try:
                 await manager.send_personal_message(jsonable_encoder(
@@ -79,8 +80,9 @@ async def add_alert_brayzer_client(
                         'result_dict': result_dict,
                     }
                 ), user_connect['websocket_client'])
-            except WebSocketDisconnect:
-                manager.disconnect(user_connect['websocket_client'])
+            except :
+                return
+                # manager.disconnect(user_connect['websocket_client'])
     else:
         pass
 
