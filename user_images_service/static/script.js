@@ -205,7 +205,7 @@ function predImage() {
     "Content-Type": "application/json",
     'Authorization': `Bearer ${localStorage.getItem('access_token')}`
   }
-  fetch(`http://localhost:8000/api/v1/pictures/status-image-process/pred`, {
+  fetch(`http://${debug_path}/api/v1/pictures/status-image-process/pred`, {
     method: 'get',
     headers: headers2
   }).then(function (responce) {
