@@ -1,5 +1,5 @@
 let ws
-
+//
 const debug_path = 'localhost:8000'
 
 // const debug_path  = 'api-booking.ru:8000'
