@@ -25,8 +25,8 @@ from repositories.pictures import Pictures
 headers = {
     "Content-Type": "application/json",
 }
-# hosts = 'localhost:8000'
-hosts = 'api-booking.ru'
+# hosts = 'http://localhost:8000'
+hosts = 'https://api-booking.ru'
 
 
 async def add_alert_brayzer_client(
@@ -237,7 +237,7 @@ async def save_origin_image(user_google_id, image, task):
         """
 
         shutil.copyfileobj(image.file, buffer)
-        image_link = f'http://{hosts}/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
+        image_link = f'{hosts}/{path_dir}/{user_google_id}/{image.filename}/origin/{image.filename}'
     
     """
     Pictures.objects.create - сохраняет изображение
