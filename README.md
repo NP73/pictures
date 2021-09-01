@@ -51,8 +51,10 @@
     POSTGRES_DB=glebhleb
     id_client_google=286255588660-rgio676kjntofk12u3b1kg7ok61fkbdo.apps.googleusercontent.com
     secret_key_google_auth=fDLe97luPpQhjE0nIjEmZKkk
-11. Вводим команду docker-compose sudo up -d --build нажимаем enter 
-12. Переходим в браузер и проверяем работу сайта
+11. Вводим команду chmod +x init-letsencrypt.sh нажимаем enter  для получения ssl сертификата
+12. Вводим команду chmod ./init-letsencrypt.sh нажимаем enter для получения ssl сертификата
+13. Вводим команду sudo docker-compose  up -d --build нажимаем enter 
+14. Переходим в браузер и проверяем работу сайта
 
 
 
