@@ -25,8 +25,8 @@ from repositories.pictures import Pictures
 headers = {
     "Content-Type": "application/json",
 }
-# hosts = 'localhost:8000'
-hosts = 'api-booking.ru:8000'
+hosts = 'localhost:8000'
+# hosts = 'api-booking.ru:8000'
 
 
 async def add_alert_brayzer_client(
@@ -213,7 +213,7 @@ async def save_origin_image(user_google_id, image, task):
     if not os.path.exists(f'{path_dir}/{user_google_id}'):
 
         """
-        Если такого пути еще нет создается папка которая соответсвует(ее название)
+        Если такого пути еще нет создается папка которая соответсвует(ее названию)
         google id пользователя
         """
 

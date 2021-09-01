@@ -34,7 +34,6 @@ websockets==9.1
 rsa==4.7.2
 python-jose==3.3.0
 pyasn1==0.4.8
-
 opencv-python==4.5.3.56
 ecdsa==0.17.0
 requests
