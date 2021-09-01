@@ -98,20 +98,20 @@ async def send_link_image(result_path,img_origin_path,origin_img_id,user_google_
     2 - передает данные в функцию add_alert_brayzer_client
     для отправки данных по вебсокетам
     """
-    image = f'http://{hosts}/{result_path}/{str(i)}return.png',
-    url = f'http://localhost:8000/api/v1/pictures/add_link_img/{origin_img_id}'
+    image = f'{hosts}/{result_path}/{str(i)}return.png',
+    url = f'{hosts}/api/v1/pictures/add_link_img/{origin_img_id}'
     data = {
-        "img_link": f'http://{hosts}/{result_path}/{str(i)}return.png'
+        "img_link": f'{hosts}/{result_path}/{str(i)}return.png'
     }
     res = requests.post(url=url, data=json.dumps(data), headers=headers)
     count_link = res.json()
     await add_alert_brayzer_client(
-        img_link_origin=f'http://{hosts}/{img_origin_path}',
+        img_link_origin=f'{hosts}/{img_origin_path}',
         origin_img_id=origin_img_id,
         user_google_id=user_google_id,
         result_dict=None,
         count_res_image=count_link['count_res_image'],
-        image=f'http://{hosts}/{result_path}/{str(i)}return.png',
+        image=f'{hosts}/{result_path}/{str(i)}return.png',
 
     )
 
@@ -129,10 +129,10 @@ async def send_result_client(img_origin_path,origin_img_id,user_google_id,result
     """
 
     requests.post(
-        f'http://localhost:8000/api/v1/users/change_status/{user_google_id}',
+        f'{hosts}/api/v1/users/change_status/{user_google_id}',
     )
     await add_alert_brayzer_client(
-        img_link_origin=f'http://{hosts}/{img_origin_path}',
+        img_link_origin=f'{hosts}/{img_origin_path}',
         origin_img_id=origin_img_id,
         user_google_id=user_google_id,
         result_dict=result_dict,
