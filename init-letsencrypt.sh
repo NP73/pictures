@@ -3,7 +3,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(valencia-dental.es www.valencia-dental.es)
+domains=(api-booking.ru www.api-booking.ru)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="glebhleb89@icloud.com" # Adding a valid address is strongly recommended

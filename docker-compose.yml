@@ -19,7 +19,7 @@ services:
     build: ./user_images_service
     env_file:
         - .env
-    command: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 80
+    command: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8080
     depends_on: 
       - basedata
     networks:
@@ -36,6 +36,7 @@ services:
     networks:
       - test_network
     ports:
+      - "8080:80"
       - "80:80"
       - "443:443"
    
