@@ -25,8 +25,8 @@ from repositories.pictures import Pictures
 headers = {
     "Content-Type": "application/json",
 }
-hosts = 'localhost:8000'
-# hosts = 'api-booking.ru:8000'
+# hosts = 'localhost:8000'
+hosts = 'api-booking.ru'
 
 
 async def add_alert_brayzer_client(

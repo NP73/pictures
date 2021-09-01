@@ -1,8 +1,8 @@
 let ws
 //
-const debug_path = 'localhost:8000'
+// const debug_path = 'localhost:8000'
 
-// const debug_path  = 'api-booking.ru:8000'
+const debug_path  = 'api-booking.ru'
 let count_etap
 function onwssocket() {
   ws = new WebSocket(`ws://${debug_path}/ws/${localStorage.getItem('google_id')}`);
