@@ -26,16 +26,16 @@
  0. В файле init-letsencrypt.sh в переменной domains вводим свое доменное имя example.ru www.example.ru
  1.  В папке data/nginx после значения server_name прописываем свое доменное имя и каждом месте где стоит example.com также заменяем на свое
  2. ### В папке static файл script js р
-    1. //закоментировать при деплое -  раскоментироватьпри локальной разработке
-    2. // const debug_path = 'http://localhost:8000' //при локальной разработке
-    3. // const socket_debug = 'ws' //при локальной разработке
-    4. // let wshost = 'localhost:8000' //при локальной разработке
+       ### //закоментировать при деплое -  раскоментироватьпри локальной разработке
+       2. // const debug_path = 'http://localhost:8000' //при локальной разработке
+       3. // const socket_debug = 'ws' //при локальной разработке
+       4. // let wshost = 'localhost:8000' //при локальной разработке
 
 
-    5. //раскоментировать при деплое - закоментировать при локальной разработке прописать свой домен
-    6. const socket_debug = 'wss'
-    7. let wshost = 'api-booking.ru'
-    8. const debug_path  = 'https://api-booking.ru'
+      ### //раскоментировать при деплое - закоментировать при локальной разработке прописать свой домен
+      1. const socket_debug = 'wss'
+      2. let wshost = 'api-booking.ru'
+      3. const debug_path  = 'https://api-booking.ru'
 
  3. В папке service файл pictures в переменную hosts = 'http://localhost:8000' 
  прописать имя домена https://example.com
