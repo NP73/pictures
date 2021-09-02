@@ -21,6 +21,15 @@
     |       └──app.conf #файл с настойкми nginx
     ├── .env #файл с секретными переменными (создается при деплое sudo nano .env)
     └─  docker-compose.yml
+## в папке templates  файл base.py в строчке заменяем в content на свой ключ который выдал гугл oauth . ссылка с примером как получить ключи https://developers.google.com/identity/sign-in/web/sign-in
+<meta name="google-signin-client_id" content="286255588660-84eqn1m2rtfpmi4lu02epa63jg1ujt3l.apps.googleusercontent.com">
+
+###  при локальной нужно создать файл .env с обязательными полями (если нужен фронтенд) ссылка с примером как получить ключи https://developers.google.com/identity/sign-in/web/sign-in
+    ```
+    # Environment settings for local development.
+        id_client_google
+        secret_key_google_auth
+    ```
 ### перед разворачиванием локально не забываем создать баззу данных postgres локально или на стороннем сервисе . прописав путь в переменную URL_DATA_BASE в папке config файл database.py
 ### перед деплоем 
  0. В файле init-letsencrypt.sh в переменной domains вводим свое доменное имя example.ru www.example.ru
@@ -60,13 +69,16 @@
  9. Вводим команду  cd pictures/ нажимаем enter
  10. Вводим команду  sudo nano .env
   откроется окно 
-  вставить туда переменные со своими значениями(что связанно с POSTGRES пишем произвольные значения,можно оставить как есть)
-  id_client_google и secret_key_google_auth это ваши ключи google auth
-    POSTGRES_USER=glebhleb
-    POSTGRES_PASSWORD=glebhleb2
-    POSTGRES_DB=glebhleb
-    id_client_google=286255588660-rgio676kjntofk12u3b1kg7ok61fkbdo.apps.googleusercontent.com
-    secret_key_google_auth=fDLe97luPpQhjE0nIjEmZKkk
+  ### вставить туда переменные со своими значениями(что связанно с POSTGRES пишем произвольные значения,можно оставить как есть)
+     1. id_client_google и secret_key_google_auth это ваши ключи google auth
+     2. POSTGRES_USER=glebhleb
+     3. POSTGRES_PASSWORD=glebhleb2
+     4. POSTGRES_DB=glebhleb
+     ## пример 
+
+      - id_client_google=286255588660-rgio676kjntofk12u3b1kg7ok61fkbdo.apps.googleusercontent.com
+      - secret_key_google_auth=fDLe97luPpQhjE0nIjEmZKkk
+
 11. Вводим команду chmod +x init-letsencrypt.sh нажимаем enter  для получения ssl сертификата
 12. Вводим команду chmod ./init-letsencrypt.sh нажимаем enter для получения ssl сертификата
 13. Вводим команду sudo docker-compose  up -d --build нажимаем enter 
