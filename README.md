@@ -30,6 +30,13 @@
         secret_key_google_auth = ....
     ```
 ### перед разворачиванием локально не забываем создать баззу данных postgres локально или на стороннем сервисе . прописав путь в переменную URL_DATA_BASE в папке config файл database.py
+
+### Команды для локального разворачивания
+1. python3 -m venv env в директории user_images_service
+2. source env/bin/activate
+3. uvicorn main:app --reload
+
+
 ### перед деплоем 
  0. В файле init-letsencrypt.sh в переменной domains вводим свое доменное имя example.ru www.example.ru
  1.  В папке data/nginx после значения server_name прописываем свое доменное имя и каждом месте где стоит example.com также заменяем на свое
@@ -82,6 +89,8 @@
 12. Вводим команду chmod ./init-letsencrypt.sh нажимаем enter для получения ssl сертификата
 13. Вводим команду sudo docker-compose  up -d --build нажимаем enter 
 14. Переходим в браузер и проверяем работу сайта
+
+
 
 
 
