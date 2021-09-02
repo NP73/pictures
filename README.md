@@ -26,9 +26,8 @@
 
 ###  при локальной нужно создать файл .env с обязательными полями (если нужен фронтенд) ссылка с примером как получить ключи https://developers.google.com/identity/sign-in/web/sign-in
     ```
-    # Environment settings for local development.
-        id_client_google
-        secret_key_google_auth
+        id_client_google= ...
+        secret_key_google_auth = ....
     ```
 ### перед разворачиванием локально не забываем создать баззу данных postgres локально или на стороннем сервисе . прописав путь в переменную URL_DATA_BASE в папке config файл database.py
 ### перед деплоем 
