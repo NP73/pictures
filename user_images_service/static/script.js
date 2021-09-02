@@ -3,10 +3,12 @@ let ws
 // const debug_path = 'http://localhost:8000' //при локальной разработке
 // const socket_debug = 'ws' //при локальной разработке
 const socket_debug = 'wss'
+let wshost = 'api-booking.ru'
+// let wshost = 'localhost:8000' //при локальной разработке
 const debug_path  = 'https://api-booking.ru'
 let count_etap
 function onwssocket() {
-  ws = new WebSocket(`${socket_debug}://${debug_path}/ws/${localStorage.getItem('google_id')}`);
+  ws = new WebSocket(`${socket_debug}://${wshost}/ws/${localStorage.getItem('google_id')}`);
   ws.onmessage = (event) => {
     let result = JSON.parse(event.data)
     if (result.close_result) {
