@@ -33,8 +33,9 @@
 
 ### Команды для локального разворачивания
 1. python3 -m venv env в директории user_images_service
-2. source env/bin/activate
-3. uvicorn main:app --reload
+2. pip install -r requirements.txt
+3. source env/bin/activate
+4. uvicorn main:app --reload
 
 
 ### перед деплоем 
