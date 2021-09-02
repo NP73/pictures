@@ -1,11 +1,12 @@
 let ws
-//
-// const debug_path = 'localhost:8000'
 
-const debug_path  = 'api-booking.ru'
+// const debug_path = 'http://localhost:8000' //при локальной разработке
+// const socket_debug = 'ws' //при локальной разработке
+const socket_debug = 'wss'
+const debug_path  = 'https://api-booking.ru'
 let count_etap
 function onwssocket() {
-  ws = new WebSocket(`wss://${debug_path}/ws/${localStorage.getItem('google_id')}`);
+  ws = new WebSocket(`${socket_debug}://${debug_path}/ws/${localStorage.getItem('google_id')}`);
   ws.onmessage = (event) => {
     let result = JSON.parse(event.data)
     if (result.close_result) {
@@ -100,7 +101,7 @@ async function uploadImage() {
       document.querySelector('.send-load').classList.add('send-load-true')
       document.querySelector('.send').classList.add('send-text')
 
-      fetch(`https://${debug_path}/api/v1/pictures/uploadimages/${localStorage.getItem('google_id')}`, {
+      fetch(`${debug_path}/api/v1/pictures/uploadimages/${localStorage.getItem('google_id')}`, {
         method: 'post',
         body: formData,
 
@@ -162,7 +163,7 @@ function onSignIn(googleUser) {
     "spent_day_limit": 0
   }
   // отправка на сервер данных гугл
-  fetch(`https://${debug_path}/api/v1/users/`, {
+  fetch(`${debug_path}/api/v1/users/`, {
     method: 'post',
     body: JSON.stringify(data),
     headers: headers
@@ -205,7 +206,7 @@ function predImage() {
     "Content-Type": "application/json",
     'Authorization': `Bearer ${localStorage.getItem('access_token')}`
   }
-  fetch(`https://${debug_path}/api/v1/pictures/status-image-process/pred`, {
+  fetch(`${debug_path}/api/v1/pictures/status-image-process/pred`, {
     method: 'get',
     headers: headers2
   }).then(function (responce) {

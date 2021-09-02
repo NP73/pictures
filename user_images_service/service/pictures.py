@@ -25,9 +25,8 @@ from repositories.pictures import Pictures
 headers = {
     "Content-Type": "application/json",
 }
-# hosts = 'http://localhost:8000'
-hosts = 'https://api-booking.ru'
-
+# hosts = 'http://localhost:8000' #при локальной разработке
+hosts = 'https://api-booking.ru' #при размещении
 
 async def add_alert_brayzer_client(
         img_link_origin,
