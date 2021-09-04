@@ -20,7 +20,24 @@ async def date_time_count(last_picture_user_time):
 
     time_pict  = datetime.strptime(str(last_picture_user_time), "%Y-%m-%d %H:%M:%S.%f")
     now_date_time = datetime.strptime(str(datetime.now()), "%Y-%m-%d %H:%M:%S.%f")
+    print(str(datetime.now()), str(last_picture_user_time))
+    now = str(datetime.now())[5:7]
+    pict = str(last_picture_user_time)[5:7]
+    print(int(now)-int(pict))
     return int((now_date_time - time_pict).seconds/60)
+
+async def date_time_count_day(last_picture_user_time):
+
+    """
+    Сравнивает время в данный момент с временем
+    последнего загруженного изображения, 
+    возвращает результат в минутах
+    """
+    print('day')
+    now = str(datetime.now())[5:7]
+    pict = str(last_picture_user_time)[5:7]
+    return int(now)-int(pict)
+    
 
 
 async def user_data_upload(user_google_id,image,task):
@@ -51,7 +68,8 @@ async def user_data_upload(user_google_id,image,task):
         message = 'У вас нет доступа к функции сервиса'
         status = False
     elif user.spent_day_limit >= user.day_limit:
-        if await date_time_count(last_picture_user.timestamp) > 1440:
+        print(await date_time_count(last_picture_user.timestamp))
+        if await date_time_count_day(last_picture_user.timestamp) > 1:
             timestamp,id_image = await save_origin_image(user_google_id, image,task)
             await user.update(
                 last_uploaded_image_id = id_image,

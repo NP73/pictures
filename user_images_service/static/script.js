@@ -1,14 +1,14 @@
 let ws
 //закоментировать при деплое -  раскоментироватьпри локальной разработке
-// const debug_path = 'http://localhost:8000' //при локальной разработке
-// const socket_debug = 'ws' //при локальной разработке
-// let wshost = 'localhost:8000' //при локальной разработке
+const debug_path = 'http://localhost:8000' //при локальной разработке
+const socket_debug = 'ws' //при локальной разработке
+let wshost = 'localhost:8000' //при локальной разработке
 
 
 //раскоментировать при деплое - закоментировать при локальной разработке прописать свой домен
-const socket_debug = 'wss'
-let wshost = 'api-booking.ru'
-const debug_path  = 'https://api-booking.ru'
+// const socket_debug = 'wss'
+// let wshost = 'api-booking.ru'
+// const debug_path  = 'https://api-booking.ru'
 
 
 let count_etap
